@@ -33,8 +33,7 @@
       </el-row>
     </div>
 
-    <div class="headImgBox"
-         :style="{backgroundImage:store.state.themeObj.top_image?'url('+store.state.themeObj.top_image+')':'url(/img/headbg05.jpg)'}">
+    <div class="headImgBox" :style="headImageStyle">
 
       <div class="scene">
         <div><span id="luke"></span></div>
@@ -53,15 +52,14 @@
 </template>
 
 <script setup>
-import {logout} from '@/api/user'
-import {removeToken} from '@/utils/auth'
-import {getAll} from '@/api/category'
+import {getAllCategory} from '@/api/category'
 import {Typeit} from '@/utils/plug'
 import {reactive, onMounted, watch} from "vue";
 import {useStore} from "vuex";
 import {useRoute} from "vue-router";
 import router from "@/router";
 import {ElMessage, ElMessageBox} from "element-plus";
+import axios from "axios";
 
 let store = useStore();
 let route = useRoute()
@@ -73,21 +71,21 @@ let data = reactive({
   classListObj: []
 })
 
+// 头部图像样式
+let headImageStyle = reactive({
+  backgroundImage: ''
+})
 
 let param = reactive({
-  hasLogin: false,
   activeIndex: '/',                         //当前选择的路由模块
   state: '',                                //icon点击状态
   pMenu: true,                              //手机端菜单打开
-  input: '',                                //input输入内容
-  headBg: 'url(/public/img/headbg05.jpg)',   //头部背景图
-  headTou: '',                              //头像
   projectList: ''                           //项目列表
 })
 
 // 获取分类列表
 function getCategoryList() {
-  getAll().then((response) => {
+  getAllCategory().then((response) => {
     data.classListObj = response;
   })
 }
@@ -111,48 +109,29 @@ function routeChange() {
     store.state.keywords = '';
   }
 }
+
 watch(route, routeChange)
 
 
-//分组菜单打开
-function handleOpen(key, keyPath) {
-  // console.log(key, keyPath);
-}
-
-//分组菜单关闭
-function handleClose(key, keyPath) {
-  // console.log(key, keyPath);
-}
-
-//input change 事件
-function searchChangeFun(e) {
-  // console.log(e)
-  if (param.input === '') {
-    store.state.keywords = '';
-    router.push({path: '/'});
-  }
-}
-
-
 //判断当前页面是否被隐藏
-let hiddenProperty = 'hidden' in document ? 'hidden' :
-    'webkitHidden' in document ? 'webkitHidden' :
-        'mozHidden' in document ? 'mozHidden' :
-            null;
-
-let visibilityChangeEvent = hiddenProperty.replace(/hidden/i, 'visibilitychange');
-
-function onVisibilityChange() {
-  // 被隐藏
-  if (!document[hiddenProperty]) {
-    if (route.path !== '/DetailShare') {
-      // !! 表示转为布尔值
-      param.hasLogin = !!localStorage.getItem('userInfo');
-    }
-  }
-}
-
-document.addEventListener(visibilityChangeEvent, onVisibilityChange);
+// let hiddenProperty = 'hidden' in document ? 'hidden' :
+//     'webkitHidden' in document ? 'webkitHidden' :
+//         'mozHidden' in document ? 'mozHidden' :
+//             null;
+//
+// let visibilityChangeEvent = hiddenProperty.replace(/hidden/i, 'visibilitychange');
+//
+// function onVisibilityChange() {
+//   // 被隐藏
+//   if (!document[hiddenProperty]) {
+//     if (route.path !== '/DetailShare') {
+//       // !! 表示转为布尔值
+//       param.hasLogin = !!localStorage.getItem('userInfo');
+//     }
+//   }
+// }
+//
+// document.addEventListener(visibilityChangeEvent, onVisibilityChange);
 
 routeChange();
 
@@ -162,6 +141,14 @@ onMounted(() => {
     Typeit(store.state.themeObj.user_start, "#luke"); //打字机效果
     clearTimeout(timer);
   }, 500);
+})
+
+
+// 异步请求后台必应每日一图链接
+axios.get("http://localhost:8011/user/bing-img").then(res => {
+  headImageStyle.backgroundImage = 'url(' + res.data.data + ')';
+}).catch(err => {
+  console.log(err)
 })
 
 
@@ -222,8 +209,8 @@ onMounted(() => {
   color: #fff;
 }
 
- 鼠标浮在菜单项上的：文字颜色和背景色
-.headBox ul li.el-menu-item:hover{
+/* 鼠标浮在菜单项上的：文字颜色和背景色*/
+.headBox ul li.el-menu-item:hover {
   color: #fff !important;
   background: rgba(73, 69, 107, 0.7) !important;
 }
@@ -243,6 +230,7 @@ onMounted(() => {
   background: #48456C;
   border-bottom: none;
 }
+
 /*.headBox > ul .el-sub-menu:hover{*/
 /*  color: #fff !important;*/
 /*}*/
@@ -258,7 +246,6 @@ onMounted(() => {
 .headBox > ul .el-sub-menu .el-menu .el-menu-item:hover {
   background: #64609E;
 }
-
 
 
 /*pc搜索框*/
@@ -477,7 +464,7 @@ onMounted(() => {
   padding: 40px 0;
   font-size: 16px;
   opacity: 0.98;
-  background: rgba(230, 244, 249, 0.8);
+  background: rgba(230, 244, 249, 0.4);
   border-radius: 5px;
   z-index: 1;
   animation: b 1s ease-out;

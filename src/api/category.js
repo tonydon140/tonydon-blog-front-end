@@ -3,7 +3,7 @@ import adminReq from '@/utils/request-admin'
 import store from "@/store";
 
 // 查询分类列表
-export function getAll() {
+export function getAllCategory() {
     return userReq({
         url: '/category/getAll',
         method: 'get'
