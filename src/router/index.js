@@ -2,21 +2,28 @@ import {createRouter, createWebHistory} from 'vue-router'
 import {hasLogin} from "@/api/user";
 
 const routes = [
+    // 首页
     {
         path: '/',
         component: () => import('../views/Home'),
-        name: 'Home1'   // 源路径
-    }, //首页
+        name: 'Root'   // 源路径
+    },
+    //首页
     {
         path: '/Home',
         component: () => import('../views/Home.vue'),
         name: 'Home'
-    }, //首页
+    },
+    // 分类页
     {
-        path: '/Share',
-        component: () => import('../views/Share.vue'),
-        name: 'Share'
-    }, //分类
+        path: '/category/:id',
+        component: () => import('../views/Category.vue'),
+        name: 'Category'
+    },
+    {
+        path: '/category',
+        redirect: '/category/1'
+    },
     {
         path: '/article',
         redirect: '/article/1'
@@ -25,8 +32,10 @@ const routes = [
     {
         path: '/article/:aid',
         component: () => import('../views/DetailArticle.vue'),
-        name: 'DetailArticle'
-    }, //分享详情
+        name: 'Article'
+    },
+
+    //分享详情
     {
         path: '/Reward',
         component: () => import('../views/Reward.vue'),

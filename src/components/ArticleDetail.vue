@@ -13,14 +13,14 @@
       </h1>
       <h2>
         <i class="fa fa-fw fa-user"></i>发表于 <span>{{ info.article.createTime }}</span> •
-        <i class="fa fa-fw fa-eye"></i>{{ Number(info.article.viewCount)  }} 次围观 •
+        <i class="fa fa-fw fa-eye"></i>{{ Number(info.article.viewCount) }} 次围观 •
       </h2>
       <div class="ui label">
-        <router-link :to="'/Share?classId='+info.article.categoryId">{{ info.article.categoryName }}</router-link>
+        <router-link :to="'/category/'+info.article.categoryId">{{ info.article.categoryName }}</router-link>
       </div>
     </header>
 
-    <MdEditor :model-value="info.article.content" :preview-only="true" ></MdEditor>
+    <MdEditor :model-value="info.article.content" :preview-only="true"></MdEditor>
 
 
     <div class="donate">
@@ -55,11 +55,13 @@ import {reactive, watch} from "vue";
 import {useRoute} from "vue-router";
 import {useStore} from "vuex";
 import 'md-editor-v3/lib/style.css'
+import router from "@/router";
+import {ElMessage} from "element-plus";
 
 let route = useRoute()
 let store = useStore()
 let info = reactive({
-  aid: -1,          // 文章ID
+  aid: 1,          // 文章ID
   isDonate: true,   // 打开赞赏控制,
   article: {},    // 返回详情数据
 })
@@ -76,15 +78,21 @@ function getArticleDetail() {
 }
 
 function routeChange() {
-  // 1. 获取文章 id
-  info.aid = Number(route.params.aid);
-
-  // 2. 获取文章详情
-  getArticleDetail()
-
-  // 3. 更新访问量
-  updateViewCount(info.aid)
+  // 1. 判断当前路由是否是文章页面
+  if (route.path.startsWith("/article")) {
+    let id = Number(route.params.aid);
+    // 2. 如果 id 格式错误，返回上一页
+    if (isNaN(id) || id <= 0) {
+      router.back();
+      return;
+    }
+    // 3. 设置文章 id，获取文章详情，更新访问量
+    info.aid = id;
+    getArticleDetail()
+    updateViewCount(info.aid)
+  }
 }
+
 routeChange()
 watch(route, routeChange)
 

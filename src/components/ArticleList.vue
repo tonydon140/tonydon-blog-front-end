@@ -3,10 +3,12 @@
   <el-row class="share-list-box">
 
     <el-col :span="24" class="s-item tcommonBox" v-for="(article, index) in data.articleList" :key="article.id">
+
       <span class="s-round-date">
-                <span class="month" v-html="showInitDate(article.createTime,'month')+'月'"></span>
-                <span class="day" v-html="showInitDate(article.createTime,'date')"></span>
-            </span>
+        <span class="month" v-html="showInitDate(article.createTime,'month')+'月'"></span>
+        <span class="day" v-html="showInitDate(article.createTime,'date')"></span>
+      </span>
+
       <header>
         <h1>
           <router-link :to="'/article/'+article.id" target="_blank">
@@ -15,18 +17,27 @@
         </h1>
 
         <h2>
-          <i class="fa fa-fw fa-user"></i>发表于
-          <i class="fa fa-fw fa-clock-o"></i>
-            <span>{{ showInitDate(article.createTime, 'all') }}</span> •
-          <i class="fa fa-fw fa-eye"></i>{{ article.viewCount }} 次围观 •
+          <el-icon>
+            <UserFilled/>
+          </el-icon>
+          发表于
+          <el-icon>
+            <Timer/>
+          </el-icon>
+          <span>{{ showInitDate(article.createTime, 'all') }}</span> •
+          <el-icon>
+            <View/>
+          </el-icon>
+          {{ article.viewCount }} 次围观 •
         </h2>
 
         <div class="ui label">
-          <router-link :to="'/Share?classId=' + article.class_id">
-            {{article.categoryName}}
+          <router-link :to="'/category/' + article.categoryId">
+            {{ article.categoryName }}
           </router-link>
         </div>
       </header>
+
       <div class="article-content">
         <p style="text-indent:2em;">
           {{ article.summary }}
@@ -35,8 +46,9 @@
           <img :src="article.thumbnail" alt="" class="maxW">
         </p>
       </div>
+
       <div class="view-detail">
-        <router-link class="tcolors-bg" :to="'/article/'+article.id" target="_blank">
+        <router-link :to="'/article/'+article.id" target="_blank">
           阅读全文>>
         </router-link>
       </div>
@@ -55,14 +67,16 @@ import {getArticleList} from '@/api/article'
 import {ref, reactive, watch} from "vue";
 import {useRoute} from "vue-router";
 import {useStore} from "vuex";
+import router from "@/router";
+import {Timer, UserFilled, View} from "@element-plus/icons-vue";
 
 
 let store = useStore();
 let route = useRoute();
 
 let data = reactive({
-  articleList:[],
-  queryParams:{
+  articleList: [],
+  queryParams: {
     pageNum: 1,
     pageSize: 10,
     categoryId: 0
@@ -81,9 +95,8 @@ function getList() {
   getArticleList(data.queryParams).then((response) => {
     // 添加数据
     data.articleList = data.articleList.concat(response.rows);
-    // console.log(data.articleList)
     // 判断是否还有数据
-    if (response.total <=data.articleList.length) {
+    if (response.total <= data.articleList.length) {
       data.hasMore = false;
     } else {
       data.hasMore = true;
@@ -105,66 +118,41 @@ function addMoreFun() {
 
 // 路由改变
 function routeChange() {
-  data.queryParams.categoryId = route.query.classId === undefined ? 0 : parseInt(route.query.classId);
+  // 1. 判断当前路由是否是分类页面
+  if (route.path.startsWith("/category")) {
+    // 2. 获取分类id，若id不合法跳转至未分类
+    let categoryId = Number(route.params.id);
+    if (isNaN(categoryId) || categoryId < 0) {
+      router.push("/category");
+      // 路由跳转之后需要 return 结束函数，否则后续代码依旧会执行
+      return;
+    }
+    // 3. 设置查询分类
+    data.queryParams.categoryId = categoryId;
+  }
+  // 4. 无论是不是分类页面，都需要展示数据
   showSearchShowList(true);
 }
 
 routeChange();
 watch(route, routeChange);
-// 无法监视
-// watch(store.state.keywords, routeChange)
 
 </script>
 
-<style>
-/*分享标题*/
-.shareTitle {
-  margin-bottom: 40px;
-  position: relative;
-  border-radius: 5px;
-  background: #fff;
-  padding: 15px;
-}
-
-.share-class-two {
-  width: 100%;
-}
-
-.share-class-two li {
-  display: inline-block;
-}
-
-.share-class-two li a {
-  display: inline-block;
-  padding: 3px 7px;
-  margin: 5px 10px;
-  color: #fff;
-  border-radius: 4px;
-  background: #64609E;
-  border: 1px solid #64609E;
-  transition: transform 0.2s linear;
-  -webkit-transition: transform 0.2s linear;
-}
-
-.share-class-two li a:hover {
-  transform: translate(0, -3px);
-  -webkit-transform: translate(0, -3px);
-}
-
-.share-class-two li a.active {
-  background: #fff;
-  color: #64609E;
-
-}
-
-/*文章列表*/
+<style scoped lang="less">
+// 文章列表
 .share-list-box {
   transition: all 0.5s ease-out;
   font-size: 15px;
+
+  .el-col {
+
+    // 阅读全文
+    .view-detail {
+      :hover {
+        color: #00a0e9;
+      }
+    }
+  }
 }
-
-
-/*.share-list-box .view-more a:hover,.s-item .view-detail a:hover{
-    background: #48456C;
-}*/
 </style>

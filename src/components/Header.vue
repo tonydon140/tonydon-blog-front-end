@@ -2,7 +2,7 @@
 <template>
   <div class="">
     <div class="headBack">
-      <el-row class="container">
+      <el-row class="head-container">
         <el-col :span="24">
           <!-- pc端导航 -->
           <div class="headBox">
@@ -10,22 +10,38 @@
                      class="el-menu-demo"
                      mode="horizontal"
                      @select="handleSelect"
-                     :ellipsis='false'
                      :router="true">
 
-              <el-menu-item index="/Home"><i class="fa fa-wa fa-home"></i> 首页</el-menu-item>
+              <el-menu-item index="/Home">
+                <el-icon>
+                  <home-filled/>
+                </el-icon>
+                首页
+              </el-menu-item>
 
-              <el-sub-menu index="/Share">
-                <template #title><i class="fa fa-wa fa-archive"></i> 分类</template>
-                <el-menu-item v-for="item in data.classListObj"
+              <el-sub-menu index="/category">
+                <template #title>
+                  <el-icon>
+                    <management/>
+                  </el-icon>
+                  分类
+                </template>
+                <el-menu-item v-for="item in data.categoryList"
                               :key="item.id"
-                              :index="'/Share?classId='+item.id">
+                              :index="'/category/'+item.id">
                   {{ item.name }}
                 </el-menu-item>
               </el-sub-menu>
 
-              <el-menu-item index="/Reward"><i class="fa fa-wa fa-cny"></i> 赞赏</el-menu-item>
-              <el-menu-item index="/FriendsLink"><i class="fa fa-wa fa-users"></i>友链</el-menu-item>
+              <el-menu-item index="/Reward">
+                <el-icon><milk-tea /></el-icon>
+                赞赏
+              </el-menu-item>
+
+              <el-menu-item index="/FriendsLink">
+                <el-icon><sugar /></el-icon>
+                友链
+              </el-menu-item>
 
             </el-menu>
           </div>
@@ -34,20 +50,15 @@
     </div>
 
     <div class="headImgBox" :style="headImageStyle">
-
       <div class="scene">
         <div><span id="luke"></span></div>
       </div>
-
       <div class="h-information">
-        <img
-            :src="store.state.themeObj.head_portrait? store.state.themeObj.head_portrait:'/img/icon2.jpg'"
-            alt="">
-        <h2 class="h-description">
-          {{ store.state.themeObj.autograph ? store.state.themeObj.autograph : "三更灯火五更鸡，正是男儿读书时" }}
-        </h2>
+        <img :src="'/img/icon2.jpg'" alt="">
+        <h2 class="h-description">爱睡懒觉的程序猿 TonyDon</h2>
       </div>
     </div>
+
   </div>
 </template>
 
@@ -57,9 +68,8 @@ import {Typeit} from '@/utils/plug'
 import {reactive, onMounted, watch} from "vue";
 import {useStore} from "vuex";
 import {useRoute} from "vue-router";
-import router from "@/router";
-import {ElMessage, ElMessageBox} from "element-plus";
 import axios from "axios";
+import {HomeFilled, Management, MilkTea,Sugar} from "@element-plus/icons-vue";
 
 let store = useStore();
 let route = useRoute()
@@ -67,8 +77,7 @@ let route = useRoute()
 // 提高数据
 // 想具有响应式的修改变量的指向，必须先存在响应式数据中
 let data = reactive({
-  userInfo: {},
-  classListObj: []
+  categoryList: {}
 })
 
 // 头部图像样式
@@ -85,8 +94,8 @@ let param = reactive({
 
 // 获取分类列表
 function getCategoryList() {
-  getAllCategory().then((response) => {
-    data.classListObj = response;
+  getAllCategory().then(value => {
+    data.categoryList = value;
   })
 }
 
@@ -102,12 +111,6 @@ function routeChange() {
 
   // 获取分类
   getCategoryList()
-  if ((route.name === "Share" || route.name === "Home") && store.state.keywords) {
-    param.input = store.state.keywords;
-  } else {
-    param.input = '';
-    store.state.keywords = '';
-  }
 }
 
 watch(route, routeChange)
@@ -157,12 +160,10 @@ axios.get("http://localhost:8011/user/bing-img").then(res => {
 <style>
 /*********头部导航栏********/
 
-/*头部导航栏盒子*/
-
+/* 头部导航栏盒子 */
 .headBack {
   width: 100%;
-  background: rgba(40, 42, 44, 0.6);
-  /*margin-bottom:30px;*/
+  /*background: rgba(40, 42, 44, 0.6);*/
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .12), 0 0 6px 0 rgba(0, 0, 0, .04);
   position: fixed;
   left: 0;
@@ -171,18 +172,9 @@ axios.get("http://localhost:8011/user/bing-img").then(res => {
   z-index: 100;
 }
 
-.headBox li.is-active {
-  /*background: #48456C;*/
-  background: rgba(73, 69, 107, 0.7);
-}
-
-.el-menu--horizontal > .el-sub-menu.is-active .el-sub-menu__title {
-  border-bottom: none !important;
-}
-
+/* 导航栏背景颜色 */
 .headBox .el-menu {
-  background: transparent;
-  border-bottom: none !important;
+  background-color: rgb(233, 233, 233, 0.6);
 }
 
 .headBox .el-menu-demo li.el-menu-item,
@@ -192,63 +184,12 @@ axios.get("http://localhost:8011/user/bing-img").then(res => {
   border-bottom: none !important;
 }
 
-.headBox .el-sub-menu li.el-menu-item {
-  height: 38px;
-  line-height: 38px;
+/* 消除导航栏底部下划线 */
+.headBox .el-menu--horizontal {
+  border-bottom: none !important;
 }
 
-.headBox li .fa-wa {
-  vertical-align: baseline;
-}
-
-.headBox ul li.el-menu-item,
-.headBox ul li.el-menu-item.is-active,
-.headBox ul li.el-menu-item:hover,
-.headBox .el-sub-menu div.el-sub-menu__title,
-.headBox .el-sub-menu__title i.el-sub-menu__icon-arrow {
-  color: #fff;
-}
-
-/* 鼠标浮在菜单项上的：文字颜色和背景色*/
-.headBox ul li.el-menu-item:hover {
-  color: #fff !important;
-  background: rgba(73, 69, 107, 0.7) !important;
-}
-
-.el-menu--horizontal > .el-menu-item.is-active {
-  color: #fff !important;
-}
-
-.headBox .el-menu--horizontal .el-sub-menu > .el-menu {
-  top: 38px;
-  border: none;
-  padding: 0;
-}
-
-.headBox > ul li.el-menu-item:hover,
-.headBox > ul li.el-sub-menu:hover .el-sub-menu__title {
-  background: #48456C;
-  border-bottom: none;
-}
-
-/*.headBox > ul .el-sub-menu:hover{*/
-/*  color: #fff !important;*/
-/*}*/
-.headBox > ul .el-sub-menu .el-menu,
-.headBox > ul .el-sub-menu .el-menu .el-menu-item {
-  background: #48456C;
-}
-
-.headBox > ul .el-sub-menu .el-menu .el-menu-item {
-  min-width: 0;
-}
-
-.headBox > ul .el-sub-menu .el-menu .el-menu-item:hover {
-  background: #64609E;
-}
-
-
-/*pc搜索框*/
+/******PC搜索框******/
 
 .headBox .pc-search-box {
   padding: 0;
@@ -307,58 +248,6 @@ axios.get("http://localhost:8011/user/bing-img").then(res => {
   padding-right: 10px;
 }
 
-.headBox .userInfo {
-  height: 100%;
-  line-height: 38px;
-  position: absolute;
-  right: 30px;
-  top: 0;
-  color: #fff;
-}
-
-.headBox .userInfo a {
-  color: #fff;
-  font-size: 13px;
-  transition: all 0.2s ease-out;
-}
-
-.headBox .userInfo a:hover {
-  color: #48456C;
-}
-
-.headBox .no-login {
-  text-align: right;
-}
-
-.headBox .has-login {
-  text-align: right;
-  position: relative;
-  min-width: 80px;
-  cursor: pointer;
-}
-
-.headBox .has-login:hover ul {
-  visibility: visible;
-  opacity: 1;
-}
-
-.headBox .has-login ul {
-  background: rgba(40, 42, 44, 0.6);
-  padding: 5px 10px;
-  position: absolute;
-  right: 0;
-  visibility: hidden;
-  opacity: 0;
-  transition: all 0.3s ease-out;
-}
-
-.headBox .has-login ul li {
-  border-bottom: 1px solid #48456C;
-}
-
-.headBox .has-login ul li:last-child {
-  border-bottom: 1px solid transparent;
-}
 
 /*******移动端*******/
 
@@ -460,7 +349,7 @@ axios.get("http://localhost:8011/user/bing-img").then(res => {
   width: 70%;
   margin: auto;
   position: relative;
-  top: 480px;
+  top: 490px;
   padding: 40px 0;
   font-size: 16px;
   opacity: 0.98;

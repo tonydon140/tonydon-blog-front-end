@@ -43,9 +43,9 @@
                 content="微信"
                 placement="top"
             >
-              <a :href="catchMeObj.wechat" target="_blank"
-              ><i class="fa fa-fw fa-wechat"></i
-              ></a>
+              <a :href="catchMeObj.wechat" target="_blank">
+                <i class="fa fa-fw fa-wechat"></i>
+              </a>
             </el-tooltip>
             <el-tooltip
                 class="item"

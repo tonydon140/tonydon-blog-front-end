@@ -139,6 +139,7 @@ a {
 .container {
   max-width: 80%;
   margin: 0 auto;
+  //align-content: center;
   padding: 0 10px;
   // overflow-x: hidden;
   // -webkit-overflow-x: hidden;

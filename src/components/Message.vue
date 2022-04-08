@@ -3,13 +3,21 @@
   <div class="tmsgBox" ref="tmsgBox">
     <div class="tmsg-respond" ref="respondBox">
       <h3>发表评论 <small v-show="info.isRespond" class="tcolorm" @click="removeRespond">取消回复</small></h3>
-      <form class="">
+      <el-form :model="commentForm">
+        <el-form-item label="尊贵大名">
+          <el-input
+              type="text"
+              placeholder="尊贵大名"
+              v-model="commentForm.name">
+          </el-input>
+        </el-form-item>
         <el-input
             type="textarea"
             :rows="2"
             placeholder="说点什么呢``"
-            v-model="info.textarea">
+            v-model="commentForm.content">
         </el-input>
+
         <div :class="info.pBody?'OwO':'OwO OwO-open'">
           <div class="OwO-logo" @click="info.pBody=!info.pBody">
             <span>OwO表情</span>
@@ -28,12 +36,13 @@
             </div>
           </div>
         </div>
+
         <el-row class="tmsg-r-info">
           <el-col :span="24" class="info-submit">
             <p class="tcolors-bg" @click="sendMsg">{{ info.sendTip }}</p>
           </el-col>
         </el-row>
-      </form>
+      </el-form>
     </div>
 
     <div class="tmsg-comments" ref="listDom">
@@ -41,50 +50,45 @@
 
       <div class="tmsg-comment-show">
         <ul class="tmsg-comment-list">
-          <li class="tmsg-c-item" v-for="(item,index) in info.commentList" :key="'common'+index">
+          <li class="tmsg-c-item" v-for="comment in info.commentList" :key="comment.id">
 
             <article class="">
               <header>
                 <img :src="store.state.errorImg" :onerror="store.state.errorImg" alt="">
                 <div class="i-name">
-                  {{ item.username }}
+                  {{ comment.name }}
                 </div>
-                <!-- <div class="i-class">
-                    {{item.label}}
-                </div> -->
                 <div class="i-time">
-                  <time>{{ item.createTime }}</time>
+                  <time>{{ comment.createTime }}</time>
                 </div>
               </header>
 
               <section>
-<!--                <p v-html="analyzeEmoji(item.content)">{{ analyzeEmoji(item.content) }}</p>-->
-                <p>{{ analyzeEmoji(item.content) }}</p>
+                <p>{{ analyzeEmoji(comment.content) }}</p>
                 <div v-if="info.hasLogin" class="tmsg-replay"
-                     @click="respondMsg(item.id,item.id,item.createBy, $event)">
+                     @click="respondMsg(comment.id, comment.id, comment.createBy, $event)">
                   回复
                 </div>
               </section>
             </article>
 
-            <ul v-show="item.children" class="tmsg-comment-list" style="padding-left:60px;">
-              <li class="tmsg-c-item" v-for="(citem,cindex) in item.children" :key="'citem'+cindex">
+            <ul v-show="comment.children" class="tmsg-comment-list" style="padding-left:60px;">
+              <li class="tmsg-c-item" v-for="children in comment.children" :key="children.id">
                 <article class="">
                   <header>
                     <img :src="store.state.errorImg" :onerror="store.state.errorImg" alt="">
                     <div class="i-name">
-                      {{ citem.username }} <span>回复</span> {{ citem.toCommentUserName }}
+                      {{ children.name }} <span>回复</span> {{ children.toCommentUserName }}
                     </div>
                     <div class="i-time">
-                      <time>{{ citem.createTime }}</time>
+                      <time>{{ children.createTime }}</time>
                     </div>
                   </header>
 
                   <section>
-<!--                    <p v-html="analyzeEmoji(citem.content)">{{ citem.content }}</p>-->
-                    <p>{{analyzeEmoji(citem.content) }}</p>
+                    <p>{{ analyzeEmoji(children.content) }}</p>
                     <div v-show="info.hasLogin" class="tmsg-replay"
-                         @click="respondMsg(item.id,citem.id,citem.createBy, $event)">
+                         @click="respondMsg(comment.id,children.id,children.createBy, $event)">
                       回复
                     </div>
                   </section>
@@ -107,13 +111,20 @@ import {sendComment, getArticleComment, getLinkComment} from '@/api/comment.js'
 import {getToken} from '@/utils/auth.js'
 import {useStore} from "vuex";
 import {reactive, getCurrentInstance} from "vue";
-import {ElMessageBox} from "element-plus";
+import {ElMessage, ElMessageBox} from "element-plus";
 import {useRoute} from "vue-router";
 import router from "@/router";
+
+// todo 完善评论功能
 
 let store = useStore();
 let route = useRoute();
 let ci = getCurrentInstance();
+
+let commentForm = reactive({
+  name: '',
+  content: '',
+})
 
 let info = reactive({
   respondBox: '',       // 评论表单
@@ -126,7 +137,6 @@ let info = reactive({
   aid: 0,               // 文章id
   hasMore: false,
   hasLogin: false,
-  userId: '',           // 用户id
   type: 0,              // 回复评论的当前的commentId
   leavePid: '',         // 赞赏等其他模块的分类id
   pid: '',              // 回复评论的一级commentId
@@ -221,13 +231,8 @@ let emojiList = reactive([
 // 设置数据
 function setData(initData, result) {
   let msg = result.rows;
-  if (initData) {
-    //刷新列表
-    info.commentList = msg;
-  } else {
-    //加载更多
-    info.commentList = info.commentList.concat(msg);
-  }
+  // 刷新列表还是加载更多
+  info.commentList = initData? msg: info.commentList.concat(msg);
   // 还有更多？
   info.hasMore = result.total > info.commentList.length
 }
@@ -261,6 +266,21 @@ function analyzeEmoji(cont) {
 
 // 留言
 function sendMsg() {
+  // 1. 判断昵称是否为空
+  if (commentForm.name.trim() === '') {
+    ElMessage.error("请留下您的昵称吧");
+    return;
+  }
+  // 2. 判断内容是否为空
+  if (commentForm.content.trim() === '') {
+    info.sendTip = '内容不能为空~'
+    let timer = setTimeout(function () {
+      info.sendTip = '发送~';
+      clearTimeout(timer);
+    }, 3000);
+    return;
+  }
+
   if (info.textarea) {
     info.sendTip = '咻~~';
     sendComment(info.type, info.aid, info.rootId, info.toCommentId, info.toCommentUserId, info.textarea).then((response) => {
@@ -276,12 +296,6 @@ function sendMsg() {
         clearTimeout(timeId);
       }, 1000)
     })
-  } else {
-    info.sendTip = '内容不能为空~'
-    let timer = setTimeout(function () {
-      info.sendTip = '发送~';
-      clearTimeout(timer);
-    }, 3000)
   }
 }
 
@@ -323,11 +337,7 @@ function addMoreFun() {
 }
 
 
-// 重新加载
-function routeChange() {
-  queryParams.pageNum = 1
-  showCommentList(true);
-}
+
 
 // 取消回复留言
 function removeRespond() {
@@ -341,27 +351,21 @@ function removeRespond() {
 
 // 评论列表
 function showCommentList(initData) {
-  // 获取传参的aid
-  info.aid = route.query.aid === undefined ? 1 : parseInt(route.query.aid);
-  queryParams.articleId = info.aid
-  //判断当前用户是否登录
-  let token = getToken();
-  info.hasLogin = !!token;
+  // 1. 获取传参的aid
+  info.aid = Number(route.params.aid);
+  if (isNaN(info.aid) || info.aid <= 0) return;
+  queryParams.articleId = info.aid;
 
-  //公用设置数据方法
-  if (route.name === 'DetailArticle') {//文章列表的评论
-    info.type = 0;
-    getArticleComment(queryParams).then((response) => {
-      setData(initData, response);
-    })
-  } else {//其他评论
-    if (route.name === 'FriendsLink') {
-      info.type = 1
-      getLinkComment(queryParams).then((response) => {
-        setData(initData, response);
-      })
-    }
-  }
+  // 2. 获取文章下的评论
+  getArticleComment(queryParams).then((response) => {
+    setData(initData, response);
+  })
+}
+
+// 路由改变重新加载
+function routeChange() {
+  queryParams.pageNum = 1
+  showCommentList(true);
 }
 
 routeChange()
