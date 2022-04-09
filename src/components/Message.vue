@@ -1,119 +1,223 @@
-<!-- 留言评论模块 -->
+<!--留言评论模块-->
+<!--<template>-->
+<!--  <div class="tmsgBox" ref="tmsgBox">-->
+<!--    <div class="tmsg-respond" ref="respondBox">-->
+<!--      <h3>发表评论 <small v-show="info.isRespond" class="tcolorm" @click="removeRespond">取消回复</small></h3>-->
+<!--      <el-form :model="commentForm">-->
+<!--        <el-form-item label="尊贵大名">-->
+<!--          <el-input-->
+<!--              type="text"-->
+<!--              placeholder="尊贵大名"-->
+<!--              v-model="commentForm.name">-->
+<!--          </el-input>-->
+<!--        </el-form-item>-->
+<!--        <el-input-->
+<!--            type="textarea"-->
+<!--            :rows="2"-->
+<!--            placeholder="说点什么呢``"-->
+<!--            v-model="commentForm.content">-->
+<!--        </el-input>-->
+
+<!--        <div :class="info.pBody?'OwO':'OwO OwO-open'">-->
+<!--          <div class="OwO-logo" @click="info.pBody=!info.pBody">-->
+<!--            <span>OwO表情</span>-->
+<!--          </div>-->
+<!--          <div class="OwO-body">-->
+<!--            <ul class="OwO-items OwO-items-show">-->
+<!--              <li class="OwO-item" v-for="(item,index) in emojiList" :key="'item'+index"-->
+<!--                  @click="choseEmoji(item.title)">-->
+<!--                <img :src="'/img/emot/image/'+item.url" alt="">-->
+<!--              </li>-->
+<!--            </ul>-->
+<!--            <div class="OwO-bar">-->
+<!--              <ul class="OwO-packages">-->
+<!--                <li class="OwO-package-active">Emoji</li>-->
+<!--              </ul>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+
+<!--        <el-row class="tmsg-r-info">-->
+<!--          <el-col :span="24" class="info-submit">-->
+<!--            <p class="tcolors-bg" @click="sendMsg">{{ info.sendTip }}</p>-->
+<!--          </el-col>-->
+<!--        </el-row>-->
+<!--      </el-form>-->
+<!--    </div>-->
+
+<!--    <div class="tmsg-comments" ref="listDom">-->
+<!--      <a href="#" class="tmsg-comments-tip">活捉 {{ info.commentList ? info.commentList.length : 0 }} 条</a>-->
+
+<!--      <div class="tmsg-comment-show">-->
+<!--        <ul class="tmsg-comment-list">-->
+<!--          <li class="tmsg-c-item" v-for="comment in info.commentList" :key="comment.id">-->
+
+<!--            <article class="">-->
+<!--              <header>-->
+<!--                <img :src="store.state.errorImg" :onerror="store.state.errorImg" alt="">-->
+<!--                <div class="i-name">-->
+<!--                  {{ comment.name }}-->
+<!--                </div>-->
+<!--                <div class="i-time">-->
+<!--                  <time>{{ comment.createTime }}</time>-->
+<!--                </div>-->
+<!--              </header>-->
+
+<!--              <section>-->
+<!--                <p>{{ analyzeEmoji(comment.content) }}</p>-->
+<!--                <div v-if="info.hasLogin" class="tmsg-replay"-->
+<!--                     @click="respondMsg(comment.id, comment.id, comment.createBy, $event)">-->
+<!--                  回复-->
+<!--                </div>-->
+<!--              </section>-->
+<!--            </article>-->
+
+
+<!--            &lt;!&ndash;            <ul v-show="comment.children" class="tmsg-comment-list" style="padding-left:60px;">&ndash;&gt;-->
+<!--            &lt;!&ndash;              <li class="tmsg-c-item" v-for="children in comment.children" :key="children.id">&ndash;&gt;-->
+<!--            &lt;!&ndash;                <article class="">&ndash;&gt;-->
+<!--            &lt;!&ndash;                  <header>&ndash;&gt;-->
+<!--            &lt;!&ndash;                    <img :src="store.state.errorImg" :onerror="store.state.errorImg" alt="">&ndash;&gt;-->
+<!--            &lt;!&ndash;                    <div class="i-name">&ndash;&gt;-->
+<!--            &lt;!&ndash;                      {{ children.name }} <span>回复</span> {{ children.toCommentUserName }}&ndash;&gt;-->
+<!--            &lt;!&ndash;                    </div>&ndash;&gt;-->
+<!--            &lt;!&ndash;                    <div class="i-time">&ndash;&gt;-->
+<!--            &lt;!&ndash;                      <time>{{ children.createTime }}</time>&ndash;&gt;-->
+<!--            &lt;!&ndash;                    </div>&ndash;&gt;-->
+<!--            &lt;!&ndash;                  </header>&ndash;&gt;-->
+
+<!--            &lt;!&ndash;                  <section>&ndash;&gt;-->
+<!--            &lt;!&ndash;                    <p>{{ analyzeEmoji(children.content) }}</p>&ndash;&gt;-->
+<!--            &lt;!&ndash;                    <div v-show="info.hasLogin" class="tmsg-replay"&ndash;&gt;-->
+<!--            &lt;!&ndash;                         @click="respondMsg(comment.id,children.id,children.createBy, $event)">&ndash;&gt;-->
+<!--            &lt;!&ndash;                      回复&ndash;&gt;-->
+<!--            &lt;!&ndash;                    </div>&ndash;&gt;-->
+<!--            &lt;!&ndash;                  </section>&ndash;&gt;-->
+
+<!--            &lt;!&ndash;                </article>&ndash;&gt;-->
+<!--            &lt;!&ndash;              </li>&ndash;&gt;-->
+<!--            &lt;!&ndash;            </ul>&ndash;&gt;-->
+<!--          </li>-->
+
+<!--        </ul>-->
+<!--        <h1 v-show='info.hasMore' class="tcolors-bg" @click="addMoreFun">查看更多</h1>-->
+<!--        <h1 v-show='!info.hasMore' class="tcolors-bg">没有更多</h1>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</template>-->
+
 <template>
   <div class="tmsgBox" ref="tmsgBox">
-    <div class="tmsg-respond" ref="respondBox">
-      <h3>发表评论 <small v-show="info.isRespond" class="tcolorm" @click="removeRespond">取消回复</small></h3>
-      <el-form :model="commentForm">
-        <el-form-item label="尊贵大名">
-          <el-input
-              type="text"
-              placeholder="尊贵大名"
-              v-model="commentForm.name">
-          </el-input>
-        </el-form-item>
-        <el-input
-            type="textarea"
-            :rows="2"
-            placeholder="说点什么呢``"
-            v-model="commentForm.content">
-        </el-input>
-
-        <div :class="info.pBody?'OwO':'OwO OwO-open'">
-          <div class="OwO-logo" @click="info.pBody=!info.pBody">
-            <span>OwO表情</span>
-          </div>
-          <div class="OwO-body">
-            <ul class="OwO-items OwO-items-show">
-              <li class="OwO-item" v-for="(item,index) in emojiList" :key="'item'+index"
-                  @click="choseEmoji(item.title)">
-                <img :src="'/img/emot/image/'+item.url" alt="">
-              </li>
-            </ul>
-            <div class="OwO-bar">
-              <ul class="OwO-packages">
-                <li class="OwO-package-active">Emoji</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <el-row class="tmsg-r-info">
-          <el-col :span="24" class="info-submit">
-            <p class="tcolors-bg" @click="sendMsg">{{ info.sendTip }}</p>
-          </el-col>
-        </el-row>
-      </el-form>
-    </div>
-
+    <!-- 评论列表 -->
     <div class="tmsg-comments" ref="listDom">
-      <a href="#" class="tmsg-comments-tip">活捉 {{ info.commentList ? info.commentList.length : 0 }} 条</a>
+      <h2>文章评论 {{ info.commentList ? info.commentList.length : 0 }} 条</h2>
 
       <div class="tmsg-comment-show">
         <ul class="tmsg-comment-list">
           <li class="tmsg-c-item" v-for="comment in info.commentList" :key="comment.id">
-
             <article class="">
               <header>
-                <img :src="store.state.errorImg" :onerror="store.state.errorImg" alt="">
+                <img :src="'/img/avatar/' + comment.avatar" alt="">
                 <div class="i-name">
-                  {{ comment.name }}
+                  {{ comment.nickname }}
                 </div>
                 <div class="i-time">
                   <time>{{ comment.createTime }}</time>
                 </div>
               </header>
-
-              <section>
-                <p>{{ analyzeEmoji(comment.content) }}</p>
-                <div v-if="info.hasLogin" class="tmsg-replay"
-                     @click="respondMsg(comment.id, comment.id, comment.createBy, $event)">
-                  回复
-                </div>
-              </section>
+              <div>
+                {{ comment.content }}
+              </div>
             </article>
-
-            <ul v-show="comment.children" class="tmsg-comment-list" style="padding-left:60px;">
-              <li class="tmsg-c-item" v-for="children in comment.children" :key="children.id">
-                <article class="">
-                  <header>
-                    <img :src="store.state.errorImg" :onerror="store.state.errorImg" alt="">
-                    <div class="i-name">
-                      {{ children.name }} <span>回复</span> {{ children.toCommentUserName }}
-                    </div>
-                    <div class="i-time">
-                      <time>{{ children.createTime }}</time>
-                    </div>
-                  </header>
-
-                  <section>
-                    <p>{{ analyzeEmoji(children.content) }}</p>
-                    <div v-show="info.hasLogin" class="tmsg-replay"
-                         @click="respondMsg(comment.id,children.id,children.createBy, $event)">
-                      回复
-                    </div>
-                  </section>
-
-                </article>
-              </li>
-            </ul>
           </li>
-
         </ul>
         <h1 v-show='info.hasMore' class="tcolors-bg" @click="addMoreFun">查看更多</h1>
         <h1 v-show='!info.hasMore' class="tcolors-bg">没有更多</h1>
       </div>
     </div>
+
+    <!-- 发表评论 -->
+    <div class="tmsg-respond" ref="respondBox">
+      <!--      todo 评论回复-->
+      <h3>发表评论 <small v-show="info.isRespond" class="tcolorm" @click="removeRespond">取消回复</small></h3>
+      <el-form :model="commentForm">
+        <el-row :gutter="20">
+          <!-- 昵称输入框 -->
+          <el-col :span="12">
+            <el-form-item>
+              <el-input type="text" v-model="commentForm.nickname" placeholder="昵称">
+                <template #prepend>
+                  <el-icon>
+                    <user-filled/>
+                  </el-icon>
+                </template>
+              </el-input>
+            </el-form-item>
+          </el-col>
+          <!-- 邮箱输入框 -->
+          <el-col :span="12">
+            <el-form-item>
+              <el-input type="text" v-model="commentForm.email" placeholder="邮箱">
+                <template #prepend>
+                  <el-icon>
+                    <message/>
+                  </el-icon>
+                </template>
+              </el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-form-item>
+          <el-input
+              type="textarea"
+              :rows="2"
+              placeholder="说点什么呢``"
+              v-model="commentForm.content">
+          </el-input>
+        </el-form-item>
+
+        <!-- 表情包按钮和发送按钮 -->
+        <el-row>
+          <el-col :span="12">
+            <div :class="info.pBody?'OwO':'OwO OwO-open'">
+              <div class="OwO-logo" @click="info.pBody=!info.pBody">
+                <span>OwO表情</span>
+              </div>
+              <div class="OwO-body">
+                <ul class="OwO-items OwO-items-show">
+                  <li class="OwO-item" v-for="(item,index) in emojiList" :key="'item'+index"
+                      @click="choseEmoji(item.title)">
+                    <img :src="'/img/emot/image/'+item.url" alt="">
+                  </li>
+                </ul>
+                <div class="OwO-bar">
+                  <ul class="OwO-packages">
+                    <li class="OwO-package-active">Emoji</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </el-col>
+          <el-col :span="12" style="text-align: right">
+            <el-button>发送评论</el-button>
+          </el-col>
+        </el-row>
+
+      </el-form>
+
+    </div>
   </div>
 </template>
 
 <script setup>
-import {sendComment, getArticleComment, getLinkComment} from '@/api/comment.js'
-import {getToken} from '@/utils/auth.js'
+import {sendComment, getArticleComment} from '@/api/comment.js'
 import {useStore} from "vuex";
 import {reactive, getCurrentInstance} from "vue";
 import {ElMessage, ElMessageBox} from "element-plus";
 import {useRoute} from "vue-router";
 import router from "@/router";
+import {UserFilled, Message} from "@element-plus/icons-vue";
 
 // todo 完善评论功能
 
@@ -122,7 +226,10 @@ let route = useRoute();
 let ci = getCurrentInstance();
 
 let commentForm = reactive({
-  name: '',
+  nickname: '',
+  avatar: 'dog.jpg',
+  email: '',
+  replyId: -1,
   content: '',
 })
 
@@ -136,16 +243,11 @@ let info = reactive({
   commentList: [],      // 评论列表数据
   aid: 0,               // 文章id
   hasMore: false,
-  hasLogin: false,
-  type: 0,              // 回复评论的当前的commentId
   leavePid: '',         // 赞赏等其他模块的分类id
-  pid: '',              // 回复评论的一级commentId
-  rootId: -1,           // 根评论id，如果是针对文字评论直接用-1表示
-  toCommentId: -1,      // 所回复评论的id
-  toCommentUserId: -1,  // 所评论的用户id
   sendTip: '发送~'
 })
 
+// 分页查询参数
 let queryParams = reactive({
   pageNum: 1,
   pageSize: 10,
@@ -232,7 +334,7 @@ let emojiList = reactive([
 function setData(initData, result) {
   let msg = result.rows;
   // 刷新列表还是加载更多
-  info.commentList = initData? msg: info.commentList.concat(msg);
+  info.commentList = initData ? msg : info.commentList.concat(msg);
   // 还有更多？
   info.hasMore = result.total > info.commentList.length
 }
@@ -265,7 +367,7 @@ function analyzeEmoji(cont) {
 }
 
 // 留言
-function sendMsg() {
+function sendMessage() {
   // 1. 判断昵称是否为空
   if (commentForm.name.trim() === '') {
     ElMessage.error("请留下您的昵称吧");
@@ -281,53 +383,27 @@ function sendMsg() {
     return;
   }
 
-  if (info.textarea) {
-    info.sendTip = '咻~~';
-    sendComment(info.type, info.aid, info.rootId, info.toCommentId, info.toCommentUserId, info.textarea).then((response) => {
-      info.textarea = '';
-      info.rootId = -1;
-      info.toCommentId = -1;
-      info.toCommentUserId = -1;
-
-      routeChange();
-      removeRespond();
-      let timeId = setTimeout(function () {
-        info.sendTip = '发送~';
-        clearTimeout(timeId);
-      }, 1000)
-    })
-  }
+  // if (info.textarea) {
+  //   info.sendTip = '咻~~';
+  //   sendComment(info.aid, ).then((response) => {
+  //     info.textarea = '';
+  //     info.rootId = -1;
+  //     info.toCommentId = -1;
+  //     info.toCommentUserId = -1;
+  //
+  //     routeChange();
+  //     removeRespond();
+  //     let timeId = setTimeout(function () {
+  //       info.sendTip = '发送~';
+  //       clearTimeout(timeId);
+  //     }, 1000)
+  //   })
+  // }
 }
 
 // 回复留言
-function respondMsg(rootId, toCommentId, toCommentUserId, event) {
-  // 如果用户已经登陆
-  if (localStorage.getItem('userInfo')) {
-    // 获取触发事件的 Dom
-    let dom = event.currentTarget;
-    dom = dom.parentNode;
+function replyMessage(rootId, toCommentId, toCommentUserId, event) {
 
-    info.isRespond = true;
-    //   this.leavePid = leavePid;
-    info.rootId = rootId
-    info.toCommentId = toCommentId;
-    info.toCommentUserId = toCommentUserId
-
-    dom.appendChild(ci.refs.respondBox);
-  } else {
-    ElMessageBox.confirm('登录后即可点赞和收藏，是否前往登录页面?', '提示', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-    }).then(() => {
-      // 确定，跳转至登录页面
-      // 储存当前页面路径，登录成功后跳回来
-      localStorage.setItem('logUrl', route.fullPath);
-      router.push('/Login?login=1');
-    }).catch(() => {
-      // ....
-    });
-  }
 }
 
 // 查看更多
@@ -337,17 +413,15 @@ function addMoreFun() {
 }
 
 
-
-
 // 取消回复留言
-function removeRespond() {
-  info.isRespond = false;
-  info.rootId = -1;
-  info.toCommentId = -1;
-  info.toCommentUserId = -1;
-  // ci.refs
-  ci.refs.tmsgBox.insertBefore(ci.refs.respondBox, ci.refs.listDom);
-}
+// function removeRespond() {
+//   info.isRespond = false;
+//   info.rootId = -1;
+//   info.toCommentId = -1;
+//   info.toCommentUserId = -1;
+//   // ci.refs
+//   ci.refs.tmsgBox.insertBefore(ci.refs.respondBox, ci.refs.listDom);
+// }
 
 // 评论列表
 function showCommentList(initData) {
