@@ -50,11 +50,6 @@ const routes = [
         path: '/login',
         component: () => import('../views/Login.vue'),
     }, //注册登录
-    {
-        path: '/user-info',
-        component: () => import('../views/UserInfo.vue'),
-        name: 'UserInfo'
-    },
     // 后台管理中心
     {
         path: '/admin',

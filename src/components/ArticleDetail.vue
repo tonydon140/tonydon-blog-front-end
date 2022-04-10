@@ -1,10 +1,12 @@
 <!-- 文章详情模块 -->
 <template>
   <div class="detailBox tcommonBox">
-            <span class="s-round-date">
-                <span class="month" v-html="showInitDate(info.article.createTime,'month')+'月'"></span>
-                <span class="day" v-html="showInitDate(info.article.createTime,'date')"></span>
-            </span>
+
+    <span class="s-round-date">
+      <span class="month" v-html="showInitDate(info.article.createTime,'month')+'月'"></span>
+      <span class="day" v-html="showInitDate(info.article.createTime,'date')"></span>
+    </span>
+
     <header>
       <h1>
         <router-link :to="'/article/' + info.article.id" target="_blank">
@@ -22,28 +24,7 @@
 
     <MdEditor :model-value="info.article.content" :preview-only="true"></MdEditor>
 
-
-    <div class="donate">
-      <div class="donate-word">
-        <span @click="info.isDonate=!info.isDonate">赞赏</span>
-      </div>
-      <el-row :class="info.isDonate?'donate-body':'donate-body donate-body-show'" :gutter="30">
-        <el-col :span="12" class="donate-item">
-          <div class="donate-tip">
-            <img :src="info.article.wechat_image ? info.article.wechat_image : '/img/wx_pay.png'"
-                 :onerror="store.state.errorImg"/>
-            <span>微信扫一扫，向我赞赏</span>
-          </div>
-        </el-col>
-        <el-col :span="12" class="donate-item">
-          <div class="donate-tip">
-            <img :src="info.article.alipay_image ? info.article.alipay_image : '/img/ali_pay.jpg'"
-                 :onerror="store.state.errorImg" alt=""/>
-            <span>支付宝扫一扫，向我赞赏</span>
-          </div>
-        </el-col>
-      </el-row>
-    </div>
+    <donate></donate>
   </div>
 </template>
 
@@ -56,14 +37,14 @@ import {useRoute} from "vue-router";
 import {useStore} from "vuex";
 import 'md-editor-v3/lib/style.css'
 import router from "@/router";
-import {ElMessage} from "element-plus";
+import Donate from "@/components/Donate";
 
 let route = useRoute()
 let store = useStore()
 let info = reactive({
-  aid: 1,          // 文章ID
-  isDonate: true,   // 打开赞赏控制,
-  article: {},    // 返回详情数据
+  aid: 1,               // 文章ID
+  donatePanel: false,   // 捐赠面板
+  article: {},          // 返回详情数据
 })
 
 // 年月日的编辑
@@ -98,155 +79,11 @@ watch(route, routeChange)
 
 </script>
 
-<style lang="less">
-
-
+<style scoped>
 .detailBox .viewdetail {
   margin: 10px 0;
   line-height: 24px;
   text-align: center;
-}
-
-/*分享图标*/
-.dshareBox {
-  margin-top: 40px;
-  position: relative;
-}
-
-.dshareBox a {
-  position: relative;
-  display: inline-block;
-  width: 32px;
-  height: 32px;
-  font-size: 18px;
-  border-radius: 50%;
-  line-height: 32px;
-  text-align: center;
-  vertical-align: middle;
-  margin: 4px;
-  background: #fff;
-  transition: background 0.6s ease-out;
-}
-
-.dshareBox .ds-weibo {
-  border: 1px solid #ff763b;
-  color: #ff763b;
-}
-
-.dshareBox .ds-weibo:hover {
-  color: #fff;
-  background: #ff763b;
-}
-
-.dshareBox .ds-qq {
-  color: #56b6e7;
-  border: 1px solid #56b6e7;
-}
-
-.dshareBox .ds-qq:hover {
-  color: #fff;
-  background: #56b6e7;
-}
-
-.dshareBox .ds-wechat {
-  color: #7bc549;
-  border: 1px solid #7bc549;
-}
-
-.dshareBox .ds-wechat:hover {
-  color: #fff;
-  background: #7bc549;
-}
-
-.dshareBox .ds-wechat:hover .wechatShare {
-  opacity: 1;
-  visibility: visible;
-}
-
-.detailBox .bdshare-button-style0-32 a {
-  float: none;
-  background-image: none;
-  text-indent: inherit;
-}
-
-/*点赞 收藏*/
-.dlikeColBox {
-  display: inline-block;
-  float: right;
-}
-
-.dlikeBox, .dcollectBox {
-  display: inline-block;
-  padding: 0 10px;
-  height: 35px;
-  color: #e26d6d;
-  line-height: 35px;
-  border-radius: 35px;
-  border: 1px solid #e26d6d;
-  cursor: pointer;
-}
-
-/*赞赏*/
-.donate-word {
-  margin: 40px 0;
-  text-align: center;
-}
-
-.donate-word span {
-  display: inline-block;
-  width: 80px;
-  height: 34px;
-  line-height: 34px;
-  color: #fff;
-  background: #e26d6d;
-  margin: 0 auto;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.donate-body {
-  display: none;
-}
-
-.donate-body-show {
-  display: block;
-}
-
-.donate-item {
-  text-align: right;
-}
-
-.donate-item:last-child {
-  text-align: left;
-}
-
-.donate-item img {
-  width: 100%;
-  display: block;
-  height: auto;
-}
-
-.donate-item div {
-  display: inline-block;
-  width: 150px;
-  padding: 0 6px;
-  box-sizing: border-box;
-  text-align: center;
-}
-
-.donate-item div span {
-  display: inline-block;
-  width: 100%;
-  margin: 10px 0;
-  text-align: center;
-}
-
-.donate-body .donate-item:first-of-type div {
-  color: #44b549;
-}
-
-.donate-body .donate-item:nth-of-type(2) div {
-  color: #00a0e9;
 }
 
 .bd_weixin_popup {

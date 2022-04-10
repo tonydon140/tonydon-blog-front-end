@@ -34,12 +34,16 @@
               </el-sub-menu>
 
               <el-menu-item index="/Reward">
-                <el-icon><milk-tea /></el-icon>
+                <el-icon>
+                  <milk-tea/>
+                </el-icon>
                 赞赏
               </el-menu-item>
 
               <el-menu-item index="/FriendsLink">
-                <el-icon><sugar /></el-icon>
+                <el-icon>
+                  <sugar/>
+                </el-icon>
                 友链
               </el-menu-item>
 
@@ -69,7 +73,7 @@ import {reactive, onMounted, watch} from "vue";
 import {useStore} from "vuex";
 import {useRoute} from "vue-router";
 import axios from "axios";
-import {HomeFilled, Management, MilkTea,Sugar} from "@element-plus/icons-vue";
+import {HomeFilled, Management, MilkTea, Sugar} from "@element-plus/icons-vue";
 
 let store = useStore();
 let route = useRoute()
@@ -111,30 +115,14 @@ function routeChange() {
 
   // 获取分类
   getCategoryList()
+  if (store.state.imageUrl === '') {
+    getImage();
+  }else{
+    headImageStyle.backgroundImage = 'url(' + store.state.imageUrl + ')';
+  }
 }
 
 watch(route, routeChange)
-
-
-//判断当前页面是否被隐藏
-// let hiddenProperty = 'hidden' in document ? 'hidden' :
-//     'webkitHidden' in document ? 'webkitHidden' :
-//         'mozHidden' in document ? 'mozHidden' :
-//             null;
-//
-// let visibilityChangeEvent = hiddenProperty.replace(/hidden/i, 'visibilitychange');
-//
-// function onVisibilityChange() {
-//   // 被隐藏
-//   if (!document[hiddenProperty]) {
-//     if (route.path !== '/DetailShare') {
-//       // !! 表示转为布尔值
-//       param.hasLogin = !!localStorage.getItem('userInfo');
-//     }
-//   }
-// }
-//
-// document.addEventListener(visibilityChangeEvent, onVisibilityChange);
 
 routeChange();
 
@@ -146,13 +134,20 @@ onMounted(() => {
   }, 500);
 })
 
-
-// 异步请求后台必应每日一图链接
-axios.get("http://localhost:8011/user/bing-img").then(res => {
-  headImageStyle.backgroundImage = 'url(' + res.data.data + ')';
-}).catch(err => {
-  console.log(err)
-})
+// 异步
+function getImage() {
+  let randPage = Math.floor(Math.random() * 8000);
+  let apiUrl = 'https://api.pexels.com/v1/search?query=nature&per_page=1&page=' + randPage;
+  axios.get(apiUrl, {
+    headers: {
+      Authorization: '563492ad6f91700001000001585a4ded298445f8a953d909783267f2'
+    }
+  }).then(value => {
+    console.log(value.data)
+    store.state.imageUrl = value.data.photos[0].src.original + '?auto=compress&cs=tinysrgb&fit=crop&h=1080&w=1920';
+    headImageStyle.backgroundImage = 'url(' + store.state.imageUrl + ')';
+  })
+}
 
 
 </script>

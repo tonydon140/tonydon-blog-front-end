@@ -3,20 +3,12 @@
 
 /**
  * 发送评论
- * @param articleId 当前文章id
- * @param nickname  评论用户名
- * @param avatar    头像
- * @param email     电子邮箱
- * @param content   评论内容
  * @return {*}      Promise
+ * @param commentForm 评论表单
  */
-export function sendComment(articleId, nickname, avatar, email, content) {
-    return saveComment(articleId, nickname, avatar, email, -1, content);
-}
-
-// 回复评论
-export function replyComment(articleId, nickname, avatar, email, replyId, content){
-    return saveComment(articleId, nickname, avatar, email, replyId, content);
+export function sendComment(commentForm) {
+    return saveComment(commentForm.articleId, commentForm.nickname,
+        commentForm.avatar, commentForm.email, commentForm.replyId, commentForm.content);
 }
 
 // 保存评论
