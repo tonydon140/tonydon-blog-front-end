@@ -7,9 +7,6 @@
         <el-col :sm="24" :md="16" style="transition:all .5s ease-out;margin-bottom:30px;">
           <Friends></Friends>
 <!--          <Message></Message>-->
-          <el-form>
-
-          </el-form>
         </el-col>
         <el-col :sm="24" :md="8">
           <RightList></RightList>

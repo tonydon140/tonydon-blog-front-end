@@ -134,17 +134,11 @@ onMounted(() => {
   }, 500);
 })
 
-// 异步
+// 异步请求后台获取背景图片
 function getImage() {
-  let randPage = Math.floor(Math.random() * 8000);
-  let apiUrl = 'https://api.pexels.com/v1/search?query=nature&per_page=1&page=' + randPage;
-  axios.get(apiUrl, {
-    headers: {
-      Authorization: '563492ad6f91700001000001585a4ded298445f8a953d909783267f2'
-    }
-  }).then(value => {
-    console.log(value.data)
-    store.state.imageUrl = value.data.photos[0].src.original + '?auto=compress&cs=tinysrgb&fit=crop&h=1080&w=1920';
+  let apiUrl = 'http://localhost:8011/user/pexels-img';
+  axios.get(apiUrl).then(value => {
+    store.state.imageUrl = value.data.data;
     headImageStyle.backgroundImage = 'url(' + store.state.imageUrl + ')';
   })
 }

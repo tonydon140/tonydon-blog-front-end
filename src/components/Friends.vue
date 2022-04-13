@@ -5,41 +5,54 @@
     <el-row>
       <el-col :span="12" class="tf-item" v-for="item in data.friendsLink" :key="item.id">
         <a :href="item.address" target="_blank">
-          <img :src="item.logo?item.logo:'/img/tou.jpg'" :onerror="store.state.errorImg" alt="">
+          <img :src="item.logo ? item.logo:'/img/tou.jpg'" alt="">
           <h4>{{ item.name }}</h4>
           <p>{{ item.description }}</p>
         </a>
       </el-col>
     </el-row>
+
     <div class="apply-friend-link">
       <el-button @click="data.friendsLinkDialog = true">我也要申请友链</el-button>
     </div>
 
     <el-dialog v-model="data.friendsLinkDialog" title="申请友链" width="600px">
-      <el-form :model="friendsLinkForm" label-width="80px">
+      <el-form
+          ref="friendsLinkFormRef"
+          :rules="rules"
+          :model="friendsLinkForm"
+          label-width="80px">
 
-        <el-form-item label="网站名称">
+        <el-form-item label="网站名称" prop="name">
           <el-input
+              :maxlength="24"
               type="text"
               placeholder="网站名称"
               v-model="friendsLinkForm.name">
           </el-input>
         </el-form-item>
 
-        <el-form-item label="网站地址">
+        <el-form-item label="网站地址" prop="address">
           <el-input
+              :maxlength="128"
               type="text"
-              placeholder="网站地址"
-              v-model="friendsLinkForm.description">
+              placeholder="网站链接"
+              v-model="friendsLinkForm.address">
           </el-input>
         </el-form-item>
 
-        <el-form-item label="网站Logo">
-
+        <el-form-item label="网站Logo" prop="logo">
+          <el-input
+              :maxlength="128"
+              type="text"
+              placeholder="Logo链接"
+              v-model="friendsLinkForm.logo">
+          </el-input>
         </el-form-item>
 
-        <el-form-item label="描述">
+        <el-form-item label="描述" prop="description">
           <el-input
+              :maxlength="200"
               type="text"
               placeholder="描述"
               v-model="friendsLinkForm.description">
@@ -52,7 +65,7 @@
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="data.friendsLinkDialog = false">取消</el-button>
-          <el-button type="primary" @click="addFriendsLink" :loading="friendsLinkForm.loading">确定</el-button>
+          <el-button type="primary" @click="apply(friendsLinkFormRef)" :loading="friendsLinkForm.loading">确定</el-button>
         </span>
       </template>
     </el-dialog>
@@ -60,9 +73,11 @@
 </template>
 
 <script setup>
-import {getAllLink} from '@/api/link.js'
+import {getFriendsLinkList, applyFriendsLink} from '@/api/friends-link.js'
 import {useStore} from "vuex";
-import {reactive} from "vue";
+import {getCurrentInstance, reactive, ref} from "vue";
+import {ElMessage} from "element-plus";
+
 
 let store = useStore();
 let data = reactive({
@@ -70,21 +85,67 @@ let data = reactive({
   friendsLinkDialog: false
 })
 
+// 友链表单
 let friendsLinkForm = reactive({
-  loading: false
+  loading: false,
+  name: '',
+  logo: '',
+  description: '',
+  address: ''
 })
+
+let regList = {
+  logoReg: /^https?:\/\/(.+\/)+.+(\.(gif|png|jpg|jpeg|webp|svg|psd|bmp|tif))$/g,
+  addressReg: /^((https|http|ftp|rtsp|mms)?:\/\/)\S+/g,
+}
 
 // 获得友链
 function getList() {
-  getAllLink().then((res) => {
-    data.friendsLink = res
+  getFriendsLinkList().then(value => {
+    data.friendsLink = value;
   })
 }
 
 getList();
 
-function addFriendsLink(){
 
+function apply() {
+  // 1. 校验名称
+  if (friendsLinkForm.name.trim() === '') {
+    ElMessage.error("网站名称不能为空");
+    return;
+  }
+
+  // 2. 校验地址
+  if (!friendsLinkForm.address.match(regList.addressReg)) {
+    ElMessage.error("网站地址格式不正确");
+    return;
+  }
+
+  // 3. 校验Logo
+  if (!friendsLinkForm.logo.match(regList.logoReg)) {
+    ElMessage.error("Logo图片格式不正确");
+    return;
+  }
+
+  // 4. 校验描述
+  if (friendsLinkForm.description.trim() === '') {
+    ElMessage.info("简单描述一下吧");
+    return;
+  }
+
+  // 5. 申请友链
+  friendsLinkForm.loading = true;
+  applyFriendsLink(friendsLinkForm).then(value => {
+    data.friendsLinkDialog = false;
+    friendsLinkForm.loading = false;
+    ElMessage.success("申请成功")
+
+  }).catch(reason => {
+    data.friendsLinkDialog = false;
+    friendsLinkForm.loading = false;
+    ElMessage.error("该链接已经申请了，请勿重复申请！");
+  })
 }
 
 </script>
@@ -149,7 +210,8 @@ function addFriendsLink(){
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-.friends-box .apply-friend-link{
+
+.friends-box .apply-friend-link {
   margin-top: 12px;
   /*text-align: center;*/
 }
