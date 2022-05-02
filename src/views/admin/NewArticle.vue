@@ -5,8 +5,8 @@
         <h2>撰写新文章</h2>
         <el-input v-model="data.title" placeholder="添加标题"/>
         <MdEditor
-            v-model="data.content"
             class="md-editor"
+            v-model="data.content"
             :on-upload-img="onUploadImg"
         />
       </el-col>
@@ -166,9 +166,14 @@ function handleThumbnailSuccess(res) {
 <style scoped lang="less">
 .el-row {
   .el-col {
+
     .el-input {
       margin-top: 15px;
       margin-bottom: 20px;
+    }
+
+    .md-editor{
+      height: 80vh;
     }
 
     .right-card {

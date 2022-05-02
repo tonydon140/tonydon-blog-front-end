@@ -1,4 +1,5 @@
 ﻿import request from '@/utils/request'
+import requestAdmin from "@/utils/request-admin";
 
 
 /**
@@ -36,5 +37,20 @@ export function getArticleComment(query) {
     return request({
         url: '/comment/' + query.articleId + '/' + query.pageNum + '/' + query.pageSize,
         method: 'get'
+    })
+}
+
+
+export function getCommentList(query){
+    return requestAdmin({
+        url: '/comment/' + query.pageNum + '/' + query.pageSize,
+        method: 'get'
+    })
+}
+
+export function removeComment(id){
+    return requestAdmin({
+        url: '/comment/' + id,
+        method: 'delete'
     })
 }

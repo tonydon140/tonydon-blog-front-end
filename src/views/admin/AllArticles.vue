@@ -7,7 +7,8 @@
       <el-table-column prop="createName" label="作者"/>
       <el-table-column prop="categoryName" label="分类"/>
       <el-table-column prop="viewCount" label="访问量"/>
-      <el-table-column prop="createTime" label="日期" sortable/>
+      <el-table-column prop="createTime" label="发布时间" sortable/>
+      <el-table-column prop="updateTime" label="最后更新时间"/>
     </el-table>
     <el-pagination
         v-model:currentPage="data.currentPage"
