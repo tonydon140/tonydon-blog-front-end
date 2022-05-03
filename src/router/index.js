@@ -57,12 +57,13 @@ const routes = [
         redirect: '/admin/home',
         children: [
             {path: 'home', component: () => import('../views/admin/AdminHome.vue')},
-            {path: 'all-article', component: () => import('../views/admin/AllArticles.vue')},
-            {path: 'new-article', component: () => import('../views/admin/NewArticle.vue')},
+            {path: 'edit', component: () => import('../views/admin/EditArticle.vue')},
+            {path: 'edit/:id', component: () => import('../views/admin/EditArticle.vue')},
             {path: 'comment', component: () => import('../views/admin/Comment.vue')},
             {path: 'all-user', component: () => import('../views/admin/AllUser.vue')},
+            {path: 'all-article', component: () => import('../views/admin/AllArticles.vue')},
+            {path: 'all-category', component: () => import('../views/admin/AllCategory.vue')},
             {path: 'user-info', component: () => import('../views/admin/UserInfo.vue')},
-            {path: 'all-category', component: () => import('../views/admin/AllCategory.vue')}
         ]
     }
 ]

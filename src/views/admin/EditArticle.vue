@@ -2,7 +2,10 @@
   <div>
     <el-row>
       <el-col :span="19">
-        <h2>撰写新文章</h2>
+
+        <h2 v-if="$route.params.id">编辑文章</h2>
+        <h2 v-else>撰写新文章</h2>
+
         <el-input v-model="data.title" placeholder="添加标题"/>
         <MdEditor
             class="md-editor"
@@ -12,9 +15,13 @@
       </el-col>
       <el-col :span="5">
         <div class="right-card">
-          <el-card>
+          <el-card v-if="data.isPublish === '0'">
             <el-button class="publish-button" type="info" @click="saveDraft">保存草稿</el-button>
-            <el-button class="publish-button" type="primary" @click="publishArticle">发布</el-button>
+            <el-button class="publish-button" type="primary" @click="publish">发布</el-button>
+          </el-card>
+          <el-card v-else>
+            <div>发布于：{{ data.publishTime }}</div>
+            <el-button class="publish-button" type="primary" @click="updateArticle">更新</el-button>
           </el-card>
 
           <el-card>
@@ -54,30 +61,88 @@
 
 <script setup>
 import MdEditor from "md-editor-v3";
-import 'md-editor-v3/lib/style.css';
-import {reactive, ref, watch} from "vue";
-import {getAllForAdmin} from "@/api/category";
 import axios from "axios";
-import {getToken} from "@/utils/token";
 import {ElMessage} from "element-plus";
-import {saveDraftArticle} from "@/api/article";
+import 'md-editor-v3/lib/style.css';
+import {reactive, defineProps, watch} from "vue";
+import {getAllForAdmin} from "@/api/category";
+import {getToken} from "@/utils/token";
+import {
+  saveDraftArticle,
+  getArticleDetailById, publishArticle
+} from "@/api/article";
 import {useStore} from "vuex";
-
+import {useRoute} from "vue-router";
+import router from "@/router";
 
 let store = useStore();
-
+let route = useRoute();
 let data = reactive({
+  categoryList: [],
+
+  id: NaN,
   title: '',
   content: '',
   category: 1,      // 文章分类，默认为未分类
-  categoryList: [],
-  thumbnail: ''
+  thumbnail: '',    // 文章缩略图
+  isPublish: '0',   // 是否发布（0草稿，1已发布）
+  publishTime: '',   // 发布时间
 });
+
+function clearData() {
+  data.categoryList = [];
+  data.id = NaN;
+  data.title = '';
+  data.content = '';
+  data.category = 1;
+  data.thumbnail = '';
+  data.isPublish = '0';
+  data.publishTime = '';
+}
+
+// 监视路由改变
+function routeChange() {
+  // 判断路由地址是否在本页
+  if (!route.path.startsWith('/admin/edit')) return;
+
+  // 获取 id，若 id 不存在直接退出
+  let id = Number(route.params.id);
+  if (!id) {
+    clearData() // 清空 data 数据
+    return;
+  }
+
+  // 如果 id 格式错误，返回上一页
+  if (isNaN(id) || id <= 0) {
+    ElMessage.error("异常地址");
+    router.back();
+    return;
+  }
+
+  data.id = id;
+  // 获取文章详情
+  getArticleDetailById(id).then(res => {
+    console.log(res)
+    data.title = res.title;
+    data.category = res.categoryId;
+    data.content = res.content;
+    data.thumbnail = res.thumbnail;
+    data.isPublish = res.isPublish;
+    data.publishTime = res.publishTime;
+  }).catch(err => {
+    ElMessage.error("文章不存在")
+    router.back();
+  })
+}
+
+routeChange();
+watch(route, routeChange);
 
 
 // 保存草稿，不检查标题，也不设置默认图片
 function saveDraft() {
-  saveDraftArticle(null,
+  saveDraftArticle(
+      data.id,
       data.title,
       data.content,
       data.category,
@@ -86,12 +151,10 @@ function saveDraft() {
     console.log(res)
     ElMessage.success("保存成功！");
   });
-
-
 }
 
 // 发布文章
-function publishArticle() {
+function publish() {
   // 1. 检查文章标题是否为空
   if (data.title.trim() === '') {
     ElMessage.error("文章标题不能为空！");
@@ -101,7 +164,22 @@ function publishArticle() {
   if (data.thumbnail === '') {
     data.thumbnail = "https://tonydon-blog.obs.cn-east-3.myhuaweicloud.com/img/2022/4/1/10ec72c4c99a46ef8b93f5ab2a5c2eff.jpg";
   }
-  // 3.
+  // 3. 发布文章
+  publishArticle(
+      data.id,
+      data.title,
+      data.content,
+      data.category,
+      data.thumbnail,
+      store.state.userInfo.id).then((res) => {
+    routeChange();    // 刷新页面
+    ElMessage.success("发布成功！");
+  }).catch(err => {
+    ElMessage.success("发布失败！");
+  })
+}
+
+function updateArticle() {
 
 }
 
@@ -172,7 +250,7 @@ function handleThumbnailSuccess(res) {
       margin-bottom: 20px;
     }
 
-    .md-editor{
+    .md-editor {
       height: 80vh;
     }
 

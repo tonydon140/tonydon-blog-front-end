@@ -41,7 +41,7 @@
                   <span>所有文章</span>
                 </el-menu-item>
 
-                <el-menu-item index="/admin/new-article">
+                <el-menu-item index="/admin/edit">
                   <el-icon>
                     <document-add/>
                   </el-icon>

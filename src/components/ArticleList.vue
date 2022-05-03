@@ -5,8 +5,8 @@
     <el-col :span="24" class="s-item tcommonBox" v-for="(article, index) in data.articleList" :key="article.id">
 
       <span class="s-round-date">
-        <span class="month" v-html="showInitDate(article.createTime,'month')+'月'"></span>
-        <span class="day" v-html="showInitDate(article.createTime,'date')"></span>
+        <span class="month" v-html="showInitDate(article.publishTime,'month')+'月'"></span>
+        <span class="day" v-html="showInitDate(article.publishTime,'date')"></span>
       </span>
 
       <header>
@@ -24,7 +24,7 @@
           <el-icon>
             <Timer/>
           </el-icon>
-          <span>{{ showInitDate(article.createTime, 'all') }}</span> •
+          <span>{{ showInitDate(article.publishTime, 'all') }}</span> •
           <el-icon>
             <View/>
           </el-icon>
@@ -43,6 +43,7 @@
           {{ article.summary }}
         </p>
         <p style="max-height:300px;overflow:hidden;text-align:center;">
+<!--          todo 缩略图尺寸-->
           <img :src="article.thumbnail" alt="" class="maxW">
         </p>
       </div>

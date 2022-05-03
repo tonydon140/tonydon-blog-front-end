@@ -4,16 +4,15 @@ import adminReq from '@/utils/request-admin';
 // 查询文章列表
 export function getArticleList(query) {
     return request({
-        url: '/article/articleList',
-        method: 'get',
-        params: query
+        url: '/article/' + query.pageNum + '/' + query.pageSize + '/' + query.categoryId,
+        method: 'get'
     })
 }
 
 //查询最热文章
 export function hotArticleList() {
     return request({
-        url: '/article/hotArticleList',
+        url: '/article/hot',
         method: 'get'
     })
 }
@@ -42,15 +41,23 @@ export function updateViewCount(id) {
  * 发布文章
  * @return {*}
  */
-export function publishArticle() {
+export function publishArticle(id, title, content, categoryId, thumbnail, publishBy) {
     return adminReq({
         url: '/article/publish',
-        method: 'post'
+        method: 'post',
+        data: {
+            id,
+            title,
+            content,
+            categoryId,
+            thumbnail,
+            publishBy
+        }
     })
 }
 
 
-export function saveDraftArticle(id, title, content, categoryId, thumbnail, createBy) {
+export function saveDraftArticle(id, title, content, categoryId, thumbnail, updateBy) {
     return adminReq({
         url: '/article/draft',
         method: 'post',
@@ -60,7 +67,7 @@ export function saveDraftArticle(id, title, content, categoryId, thumbnail, crea
             content,
             categoryId,
             thumbnail,
-            createBy
+            updateBy
         }
     })
 }
@@ -73,9 +80,16 @@ export function uploadImage() {
  * 为后台获取所有的文章
  * @return {*} Promise
  */
-export function getArticleListForAdmin(){
+export function getArticleListForAdmin() {
     return adminReq({
         url: '/article',
+        method: 'get'
+    })
+}
+
+export function getArticleDetailById(id) {
+    return adminReq({
+        url: '/article/' + id,
         method: 'get'
     })
 }
