@@ -42,8 +42,8 @@ const routes = [
         name: 'Reward'
     }, //赞赏
     {
-        path: '/FriendsLink',
-        component: () => import('../views/FriendsLink.vue'),
+        path: '/friend-link',
+        component: () => import('../views/FriendLink.vue'),
         name: 'FriendsLink'
     }, //友链
     {
@@ -64,6 +64,7 @@ const routes = [
             {path: 'all-article', component: () => import('../views/admin/AllArticles.vue')},
             {path: 'all-category', component: () => import('../views/admin/AllCategory.vue')},
             {path: 'user-info', component: () => import('../views/admin/UserInfo.vue')},
+            {path: 'friend-link', component: () => import('../views/admin/AdminFriendLink.vue')},
         ]
     }
 ]

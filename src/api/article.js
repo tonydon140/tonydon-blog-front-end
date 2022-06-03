@@ -56,6 +56,24 @@ export function publishArticle(id, title, content, categoryId, thumbnail, publis
     })
 }
 
+/**
+ * 更新已发布的文章
+ */
+export function updatePublishArticle(id, title, content, categoryId, thumbnail, updateBy){
+    return adminReq({
+        url: '/article/' + id,
+        method: 'put',
+        data: {
+            id,
+            title,
+            content,
+            categoryId,
+            thumbnail,
+            updateBy
+        }
+    })
+}
+
 
 export function saveDraftArticle(id, title, content, categoryId, thumbnail, updateBy) {
     return adminReq({

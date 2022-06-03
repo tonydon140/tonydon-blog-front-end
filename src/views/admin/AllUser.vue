@@ -41,15 +41,6 @@
 
       <el-form :model="newUser" label-width="80px">
 
-
-        <!--        <el-alert-->
-        <!--            class="header-alert"-->
-        <!--            v-show="registerInfo.error"-->
-        <!--            :title="registerInfo.title"-->
-        <!--            type="error"-->
-        <!--            :closable="false">-->
-        <!--        </el-alert>-->
-
         <el-form-item label="用户名">
           <el-input
               type="text"
@@ -90,7 +81,7 @@
         <el-form-item label="密码">
           <el-input
               type="password"
-              placeholder="密码:6-12位英文、数字、下划线"
+              placeholder="密码：6-12位英文、数字、下划线"
               v-model="newUser.password">
           </el-input>
           <el-alert

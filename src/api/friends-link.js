@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import requestAdmin from "@/utils/request-admin";
 
 // 查询所有审核通过的友链列表
 export function getFriendsLinkList() {
@@ -26,3 +27,23 @@ export function applyFriendsLink(form) {
     })
 }
 
+export function getAllFriendLink() {
+    return requestAdmin({
+        url: '/friend-link',
+        method: 'get'
+    })
+}
+
+export function passFriendLinkById(id){
+    return requestAdmin({
+        url: '/friend-link/' + id,
+        method: 'put'
+    })
+}
+
+export function removeFriendLinkById(id){
+    return requestAdmin({
+        url: '/friend-link/' + id,
+        method: 'delete'
+    })
+}

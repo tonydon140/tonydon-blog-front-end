@@ -63,6 +63,12 @@
                 </el-icon>
                 <span>评论</span>
               </el-menu-item>
+              <el-menu-item index="/admin/friend-link">
+                <el-icon>
+                  <ChatLineSquare/>
+                </el-icon>
+                <span>友链</span>
+              </el-menu-item>
 
               <el-sub-menu index="4">
                 <template #title>

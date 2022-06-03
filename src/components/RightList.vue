@@ -2,62 +2,35 @@
 <template>
   <div class="right-list-box">
     <section>
+
       <div class="r1-head">
-        <img
-            :src="store.state.themeObj.center_smailimg ? store.state.themeObj.center_smailimg : '/img/img01.jpg'"
-            alt=""
-        />
-        <h1 v-if="store.state.themeObj.user_start !== 0">
-          <span>请别再呼唤我为孤独之人</span>
-        </h1>
+        <img :src="'/img/tony.webp'" alt=""/>
+        <h1><span>吾辈当自强</span></h1>
       </div>
+
       <div class="r1-body">
         <p>睡懒觉</p>
         <div class="catch-me">
           <div class="">
             <el-tooltip class="item" content="Github" placement="top">
-              <a :href="catchMeObj.git" target="_blank"
-              ><i class="fa fa-fw fa-github"></i
-              ></a>
+              <a :href="catchMeObj.git" target="_blank">
+                <i class="fa fa-fw fa-github"/>
+              </a>
             </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="QQ" placement="top">
-              <a :href="catchMeObj.qq" target="_blank"
-              ><i class="fa fa-fw fa-qq"></i
-              ></a>
-            </el-tooltip>
-            <el-tooltip
-                class="item"
-                effect="dark"
-                content="微博"
-                placement="top"
-            >
-              <a :href="catchMeObj.sina" target="_blank"
-              ><i class="fa fa-fw fa-weibo"></i
-              ></a>
-            </el-tooltip>
-          </div>
-          <div class="">
-            <el-tooltip
-                class="item"
-                effect="dark"
-                content="微信"
-                placement="top"
-            >
+            <el-tooltip class="item" effect="dark" content="微信" placement="top">
               <a :href="catchMeObj.wechat" target="_blank">
                 <i class="fa fa-fw fa-wechat"></i>
               </a>
             </el-tooltip>
-            <el-tooltip
-                class="item"
-                effect="dark"
-                content="CSDN"
-                placement="top"
-            >
-              <a :href="catchMeObj.csdn" target="_blank"><i class="">C</i></a>
+            <el-tooltip class="item" effect="dark" content="QQ" placement="top">
+              <a :href="catchMeObj.qq" target="_blank">
+                <i class="fa fa-fw fa-qq"/>
+              </a>
             </el-tooltip>
           </div>
         </div>
       </div>
+
     </section>
 
     <!--热门文章-->
@@ -74,29 +47,15 @@
     </section>
 
     <!-- 右侧上滑小图片 -->
-    <div
-        v-if="store.state.themeObj.user_start !== 0"
-        :class="info.gotoTop ? 'toTop hidden' : 'toTop goTop hidden'"
-        @click="toTopFun"
-    >
-      <img
-          :src="store.state.themeObj.right_img ? store.state.themeObj.right_img : '/img/scroll.png'"
-          alt=""
-      />
+    <div v-if="store.state.themeObj.user_start !== 0" :class="info.gotoTop ? 'toTop hidden' : 'toTop goTop hidden'"
+         @click="toTopFun">
+      <img :src="'/img/scroll.png'" alt=""/>
     </div>
-    <div
-        v-else
-        :class="info.gotoTop ? 'toTophui hidden' : 'toTophui goTophui hidden'"
-        @click="toTopFun"
-    >
-      <img
-          :src="store.state.themeObj.right_img ? store.state.themeObj.right_img : '/img/scroll.png'"
-          alt=""
-      />
+    <div v-else :class="info.gotoTop ? 'toTophui hidden' : 'toTophui goTophui hidden'" @click="toTopFun">
+      <img :src="'/img/scroll.png'" alt=""/>
     </div>
   </div>
 </template>
-
 
 <script setup>
 import {hotArticleList} from "@/api/article";
@@ -115,12 +74,9 @@ let info = reactive({
 
 // 个人信息
 let catchMeObj = reactive({
-  git: "https://gitee.com",
-  qq: "/img/qq.png",
-  sina: "https://weibo.com",
-  wechat: "/img/qq.jpg",
-  csdn: "https://www.csdn.cn",
-  job: "https://www.baidu.com",
+  git: "https://github.com/tonydon140",
+  wechat: "/img/wechat.jpg",
+  qq: "/img/qq.jpg",
 })
 
 // 向上
@@ -161,7 +117,7 @@ getHotArticleList();
 
 </script>
 
-<style lang="less">
+<style>
 .right-list-box {
   position: relative;
 }

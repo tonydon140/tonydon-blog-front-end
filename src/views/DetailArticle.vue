@@ -13,6 +13,7 @@
         </el-col>
       </el-row>
     </div>
+    <MyFooter></MyFooter>
   </div>
 </template>
 
@@ -21,6 +22,7 @@ import Header from '../components/Header.vue'
 import RightList from '../components/RightList.vue'
 import ArticleDetail from '../components/ArticleDetail.vue'
 import Message from '../components/Message.vue'
+import MyFooter from "@/components/MyFooter";
 import {onMounted} from 'vue'
 
 onMounted(() => {

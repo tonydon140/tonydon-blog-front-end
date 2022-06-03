@@ -61,25 +61,27 @@
 
 <script setup>
 import MdEditor from "md-editor-v3";
+import 'md-editor-v3/lib/style.css';
 import axios from "axios";
 import {ElMessage} from "element-plus";
-import 'md-editor-v3/lib/style.css';
 import {reactive, defineProps, watch} from "vue";
 import {getAllForAdmin} from "@/api/category";
 import {getToken} from "@/utils/token";
 import {
   saveDraftArticle,
-  getArticleDetailById, publishArticle
+  getArticleDetailById,
+  publishArticle,
+  updatePublishArticle
 } from "@/api/article";
 import {useStore} from "vuex";
 import {useRoute} from "vue-router";
 import router from "@/router";
+import config from "@/api/config"
 
 let store = useStore();
 let route = useRoute();
 let data = reactive({
   categoryList: [],
-
   id: NaN,
   title: '',
   content: '',
@@ -122,7 +124,7 @@ function routeChange() {
   data.id = id;
   // 获取文章详情
   getArticleDetailById(id).then(res => {
-    console.log(res)
+    // console.log(res)
     data.title = res.title;
     data.category = res.categoryId;
     data.content = res.content;
@@ -148,7 +150,6 @@ function saveDraft() {
       data.category,
       data.thumbnail,
       store.state.userInfo.id).then((res) => {
-    console.log(res)
     ElMessage.success("保存成功！");
   });
 }
@@ -179,8 +180,21 @@ function publish() {
   })
 }
 
+// 更新已发布的文章
 function updateArticle() {
-
+  updatePublishArticle(
+      data.id,
+      data.title,
+      data.content,
+      data.category,
+      data.thumbnail,
+      store.state.userInfo.id
+  ).then((res) => {
+    routeChange();    // 刷新页面
+    ElMessage.success("更新成功！");
+  }).catch(err => {
+    ElMessage.success("更新失败！");
+  })
 }
 
 // 获得所有的分类
@@ -204,7 +218,7 @@ async function onUploadImg(files, callback) {
           const form = new FormData();
           form.append("file", file);
           // 异步请求后台
-          axios.post("http://localhost:6515/admin/upload/img", form, {
+          axios.post(config.baseAdminURL + "/upload/img", form, {
             headers: {
               'token': getToken(),
               'Content-Type': 'multipart/form-data'
@@ -219,7 +233,6 @@ async function onUploadImg(files, callback) {
   // 将请求返回的地址传入回调函数
   callback(result.map(value => value.data.data))
 }
-
 
 // 上传首页图片之前，限制文件类型和大小
 function beforeThumbnailUpload(file) {
@@ -237,7 +250,6 @@ function beforeThumbnailUpload(file) {
 function handleThumbnailSuccess(res) {
   data.thumbnail = res.data;
 }
-
 
 </script>
 

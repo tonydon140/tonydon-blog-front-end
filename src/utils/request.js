@@ -1,17 +1,14 @@
-import axios from 'axios'
-import {ElNotification, ElMessageBox, ElMessage} from 'element-plus'
-import router from '@/router'
-import {getToken} from '@/utils/token'
-import errorCode from '@/utils/errorCode'
-
+import axios from 'axios';
+import {ElNotification, ElMessage} from 'element-plus';
+import errorCode from '@/utils/errorCode';
+import config from "@/api/config";
 
 axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
-
 
 // 创建axios实例
 const service = axios.create({
     // 表示请求URL公共部分
-    baseURL: 'http://localhost:8011/user',
+    baseURL: config.baseFrontURL,
     // 超时
     timeout: 10000
 })

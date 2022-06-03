@@ -40,7 +40,7 @@
                 赞赏
               </el-menu-item>
 
-              <el-menu-item index="/FriendsLink">
+              <el-menu-item index="/friend-link">
                 <el-icon>
                   <sugar/>
                 </el-icon>
@@ -74,6 +74,7 @@ import {useStore} from "vuex";
 import {useRoute} from "vue-router";
 import axios from "axios";
 import {HomeFilled, Management, MilkTea, Sugar} from "@element-plus/icons-vue";
+import config from "@/api/config";
 
 let store = useStore();
 let route = useRoute()
@@ -129,15 +130,14 @@ routeChange();
 // 页面加载完毕
 onMounted(() => {
   let timer = setTimeout(function () {
-    Typeit(store.state.themeObj.user_start, "#luke"); //打字机效果
+    Typeit("#luke"); //打字机效果
     clearTimeout(timer);
   }, 500);
 })
 
 // 异步请求后台获取背景图片
 function getImage() {
-  let apiUrl = 'http://localhost:8011/user/pexels-img';
-  axios.get(apiUrl).then(value => {
+  axios.get(config.pexelsImageURL).then(value => {
     store.state.imageUrl = value.data.data;
     headImageStyle.backgroundImage = 'url(' + store.state.imageUrl + ')';
   })

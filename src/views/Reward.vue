@@ -12,6 +12,7 @@
         </el-col>
       </el-row>
     </div>
+    <MyFooter></MyFooter>
   </div>
 </template>
 
@@ -19,7 +20,7 @@
 import Header from '../components/Header.vue'
 import RightList from '../components/RightList.vue'
 import Reward from '../components/Reward.vue'
-
+import MyFooter from "@/components/MyFooter";
 </script>
 
 <style>
