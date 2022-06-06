@@ -6,6 +6,7 @@
       <el-row :gutter="30">
         <el-col :sm="24" :md="16" style="transition:all .5s ease-out;margin-bottom:30px;">
           <Friends></Friends>
+          <apply-friend-link></apply-friend-link>
         </el-col>
         <el-col :sm="24" :md="8">
           <RightList></RightList>
@@ -17,10 +18,11 @@
 </template>
 
 <script setup>
-import Header from '../components/Header.vue'
-import Friends from '../components/Friends.vue'
-import RightList from '../components/RightList.vue'
+import Header from '../components/user/Header.vue'
+import Friends from '../components/user/Friends.vue'
+import RightList from '../components/user/RightList.vue'
 import MyFooter from "@/components/MyFooter";
+import ApplyFriendLink from "@/components/admin/ApplyFriendLink";
 
 </script>
 

@@ -11,25 +11,17 @@
 </script>
 
 <style lang="less">
+
+.headline-2{
+  padding: 15px 0;
+  font-size: 24px;
+  font-weight: bold;
+}
+
 // 原博客主提色
 @tcolors: #97dffd; //按钮和标签颜色
 @tcolorm: #64609E; //分类的选中的颜色
 @tcolord: #48456D; //按钮hover 的颜色
-
-// /***** 粉红色主题****/
-// @tcolors:#97dffd;//按钮和标签颜色
-// @tcolorm:#64609E;//分类的选中的颜色
-// @tcolord:#48456D;//按钮hover 的颜色
-//
-// /******淡黄色主题*****/
-// @tcolors:#97dffd;//按钮和标签颜色
-// @tcolorm:#64609E;//分类的选中的颜色
-// @tcolord:#48456D;//按钮hover 的颜色
-//
-// /****** 淡紫色主题 ****/
-// @tcolors:#97dffd;//按钮和标签颜色
-// @tcolorm:#64609E;//分类的选中的颜色
-// @tcolord:#48456D;//按钮hover 的颜色
 
 /*reset*/
 html, body, div, span, applet, object, iframe,

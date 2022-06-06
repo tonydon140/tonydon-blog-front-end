@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/utils/request-user'
 import requestAdmin from "@/utils/request-admin";
 
 // 查询所有审核通过的友链列表

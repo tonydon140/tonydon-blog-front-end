@@ -74,7 +74,7 @@ import {useStore} from "vuex";
 import {useRoute} from "vue-router";
 import axios from "axios";
 import {HomeFilled, Management, MilkTea, Sugar} from "@element-plus/icons-vue";
-import config from "@/api/config";
+import config from "@/utils/config";
 
 let store = useStore();
 let route = useRoute()

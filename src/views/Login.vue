@@ -37,6 +37,7 @@
         </div>
       </div>
     </div>
+    <my-footer></my-footer>
   </div>
 </template>
 
@@ -48,6 +49,7 @@ import {useStore} from "vuex";
 import {useRoute} from 'vue-router'
 import router from "@/router";
 import {ElMessage} from "element-plus";
+import MyFooter from "@/components/MyFooter";
 
 let store = useStore();
 let route = useRoute();
@@ -77,7 +79,12 @@ function userLogin() {
 }
 </script>
 
-<style>
+<style scoped>
+.my-footer{
+  position: absolute;
+  bottom: 10px;
+}
+
 /*登录注册标题*/
 .loginTitle {
   text-align: center;

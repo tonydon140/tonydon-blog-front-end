@@ -3,7 +3,7 @@ import {ElNotification, ElMessageBox, ElMessage} from 'element-plus'
 import router from '@/router'
 import {getToken} from '@/utils/token'
 import errorCode from '@/utils/errorCode'
-import config from "@/api/config";
+import config from "@/utils/config";
 
 axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
 
@@ -38,6 +38,12 @@ function fulfilled(res) {
     // 获取错误信息
     const msg = errorCode[code] || res.data.msg || errorCode['default'];
 
+    // 响应成功直接返回
+    if (code === 200) {
+        return res.data.data;
+    }
+
+
     if (code === 401) {
         ElMessageBox.confirm('登录状态已过期，您可以继续留在该页面，或者重新登录', '系统提示', {
                 confirmButtonText: '重新登录',
@@ -45,22 +51,19 @@ function fulfilled(res) {
                 type: 'warning'
             }
         ).then(() => {
-            router.push('/login');
+            router.push('/login').then(r => {
+            });
         })
         return Promise.reject('无效的会话，或者会话已过期，请重新登录。')
     } else if (code === 500) {
-        ElMessage({
-            message: msg,
-            type: 'error'
-        })
+        ElMessage.error(msg);
         return Promise.reject(new Error(msg))
-    } else if (code !== 200) {
-        ElNotification.error({
-            title: msg
-        })
-        return Promise.reject('error')
     } else {
-        return res.data.data
+        ElNotification.error({
+            title: '错误！',
+            message: msg
+        });
+        return Promise.reject(code);
     }
 }
 

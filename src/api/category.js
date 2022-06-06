@@ -1,4 +1,4 @@
-import userReq from '@/utils/request'
+import userReq from '@/utils/request-user'
 import adminReq from '@/utils/request-admin'
 import store from "@/store";
 
@@ -25,6 +25,13 @@ export function getAllForAdmin() {
 export function removeCategoryById(id) {
     return adminReq({
         url: '/category/' + id,
+        method: 'delete'
+    })
+}
+
+export function confirmRemoveCategoryById(id){
+    return adminReq({
+        url: '/category/confirm/' + id,
         method: 'delete'
     })
 }

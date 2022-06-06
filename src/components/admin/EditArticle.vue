@@ -76,7 +76,7 @@ import {
 import {useStore} from "vuex";
 import {useRoute} from "vue-router";
 import router from "@/router";
-import config from "@/api/config"
+import config from "@/utils/config"
 
 let store = useStore();
 let route = useRoute();

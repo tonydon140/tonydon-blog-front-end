@@ -19,7 +19,7 @@
 
       <el-table-column label="操作">
         <template #default="scope">
-          <el-button size="small" @click="handleEdit(scope.row)">
+          <el-button size="small" @click="handleEdit(scope.row.id)">
             <el-icon>
               <edit/>
             </el-icon>
@@ -186,9 +186,9 @@ function handleDelete(user) {
   })
 }
 
-// 编辑用户 todo
-function handleEdit(user) {
-
+// 跳转至用户详情页面
+function handleEdit(id) {
+  router.push("/admin/user/" + id);
 }
 
 // 回车注册

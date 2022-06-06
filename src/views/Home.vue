@@ -17,9 +17,9 @@
 </template>
 
 <script setup>
-import Header from '../components/Header.vue'
-import ArticleList from '../components/ArticleList.vue'
-import RightList from '../components/RightList.vue'
+import Header from '../components/user/Header.vue'
+import ArticleList from '../components/user/ArticleList.vue'
+import RightList from '../components/user/RightList.vue'
 import MyFooter from "@/components/MyFooter";
 </script>
 

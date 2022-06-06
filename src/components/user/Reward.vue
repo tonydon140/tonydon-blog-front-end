@@ -24,7 +24,7 @@
 import initDate from "@/utils/server";
 import {reactive} from "vue";
 import {useStore} from "vuex";
-import Donate from "@/components/Donate";
+import Donate from "@/components/user/Donate";
 
 let store = useStore();
 let data = reactive({

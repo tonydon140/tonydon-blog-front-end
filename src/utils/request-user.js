@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {ElNotification, ElMessage} from 'element-plus';
 import errorCode from '@/utils/errorCode';
-import config from "@/api/config";
+import config from "@/utils/config";
 
 axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
 

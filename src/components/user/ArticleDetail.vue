@@ -37,7 +37,7 @@ import {useRoute} from "vue-router";
 import {useStore} from "vuex";
 import 'md-editor-v3/lib/style.css'
 import router from "@/router";
-import Donate from "@/components/Donate";
+import Donate from "@/components/user/Donate";
 
 let route = useRoute()
 let store = useStore()

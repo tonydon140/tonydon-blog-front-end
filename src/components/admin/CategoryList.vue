@@ -9,15 +9,16 @@
       <el-table-column prop="description" label="描述"/>
       <el-table-column prop="status" label="状态">
         <template #default="scope">
-          {{scope.row.status === '0' ? '正常': '停用'}}
+          {{ scope.row.status === '0' ? '正常' : '停用' }}
         </template>
       </el-table-column>
       <el-table-column label="操作">
         <template #default="scope">
-          <el-button size="small" @click="handleEdit(scope.row)">
+          <el-button size="small">
             编辑
           </el-button>
           <el-button
+              v-if="scope.row.name !== '未分类'"
               size="small"
               type="danger"
               @click="handleDelete(scope.row)">
@@ -43,7 +44,7 @@
 
         <el-form-item label="父分类">
           <el-select v-model="categoryForm.pid" placeholder="选择父分类" default-first-option>
-            <el-option :key="-1" label="无" value="-1" ></el-option>
+            <el-option :key="-1" label="无" value="-1"></el-option>
             <el-option
                 v-for="item in data.categoryList"
                 :key="item.id"
@@ -75,10 +76,10 @@
 </template>
 
 <script setup>
-
 import {reactive, ref} from "vue";
-import {getAllForAdmin, removeCategoryById, saveCategory} from "@/api/category";
-import {ElMessage} from "element-plus";
+import {getAllForAdmin, removeCategoryById, saveCategory, confirmRemoveCategoryById} from "@/api/category";
+import {ElMessage, ElMessageBox} from "element-plus";
+import httpCode from "@/utils/http-code";
 
 let data = reactive({
   categoryList: []
@@ -94,21 +95,40 @@ let categoryForm = reactive({
   loading: false    // 是否在加载
 })
 
-function getAll() {
+// 刷新分类列表
+function refreshCategoryList() {
   getAllForAdmin().then((res) => {
     data.categoryList = res;
-  })
+  });
 }
 
-getAll();
+refreshCategoryList();
 
 // 删除分类
 function handleDelete(category) {
+  if (category.name === '未分类') {
+    ElMessage.error("不能删除未分类！");
+    return;
+  }
   removeCategoryById(category.id).then(() => {
     ElMessage.success("删除成功！")
-    getAll();
-  }).catch(() => {
-    ElMessage.error("删除失败！")
+    refreshCategoryList();
+  }).catch((code) => {
+    // 如果分类中存在文章
+    if (code === httpCode.CATEGORY_HAS_ARTICLE) {
+      ElMessageBox.confirm('该分类下已经存在文章，是否删除该分类，并将分类下的文章移至未分类？', '系统提示', {
+        confirmButtonText: '确认删除',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        // 确认删除分类
+        console.log("then");
+        confirmRemoveCategoryById(category.id).then(() => {
+          ElMessage.success("删除成功！")
+          refreshCategoryList();
+        }).catch();
+      }).catch();
+    }
   })
 }
 
@@ -121,7 +141,7 @@ function addCategory() {
   }
 
   // 2. 如果 pid 为空，提示选择
-  if(categoryForm.pid === ''){
+  if (categoryForm.pid === '') {
     ElMessage.error("请选择父分类")
     return;
   }
@@ -132,8 +152,8 @@ function addCategory() {
     categoryForm.loading = false;
     categoryDialog.value = false;
     ElMessage.success("添加成功");
-    getAll();
-  }).catch((err)=>{
+    refreshCategoryList();
+  }).catch((err) => {
     ElMessage.error("添加失败")
   })
 }

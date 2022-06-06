@@ -17,9 +17,9 @@
 </template>
 
 <script setup>
-import Header from '../components/Header.vue'
-import RightList from '../components/RightList.vue'
-import Reward from '../components/Reward.vue'
+import Header from '../components/user/Header.vue'
+import RightList from '../components/user/RightList.vue'
+import Reward from '../components/user/Reward.vue'
 import MyFooter from "@/components/MyFooter";
 </script>
 

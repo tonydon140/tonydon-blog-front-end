@@ -56,15 +56,15 @@ const routes = [
         component: () => import('../views/Admin.vue'),
         redirect: '/admin/home',
         children: [
-            {path: 'home', component: () => import('../views/admin/AdminHome.vue')},
-            {path: 'edit', component: () => import('../views/admin/EditArticle.vue')},
-            {path: 'edit/:id', component: () => import('../views/admin/EditArticle.vue')},
-            {path: 'comment', component: () => import('../views/admin/Comment.vue')},
-            {path: 'all-user', component: () => import('../views/admin/AllUser.vue')},
-            {path: 'all-article', component: () => import('../views/admin/AllArticles.vue')},
-            {path: 'all-category', component: () => import('../views/admin/AllCategory.vue')},
-            {path: 'user-info', component: () => import('../views/admin/UserInfo.vue')},
-            {path: 'friend-link', component: () => import('../views/admin/AdminFriendLink.vue')},
+            {path: 'home', component: () => import('../components/admin/AdminHome.vue')},
+            {path: 'edit', component: () => import('../components/admin/EditArticle.vue')},
+            {path: 'edit/:id', component: () => import('../components/admin/EditArticle.vue')},
+            {path: 'comment', component: () => import('../components/admin/Comment.vue')},
+            {path: 'user', component: () => import('../components/admin/AdminUserList.vue')},
+            {path: 'user/:id', component: () => import('../components/admin/AdminUserInfo.vue')},
+            {path: 'all-article', component: () => import('../components/admin/AdminArticleList.vue')},
+            {path: 'all-category', component: () => import('../components/admin/CategoryList.vue')},
+            {path: 'friend-link', component: () => import('../components/admin/AdminFriendLink.vue')},
         ]
     }
 ]
