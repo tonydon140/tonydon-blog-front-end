@@ -1,6 +1,6 @@
 <template>
   <div class="my-footer">
-    <a href="https://beian.miit.gov.cn/" target="_blank">---- TonyDon ------</a>
+    <a href="https://beian.miit.gov.cn/" target="_blank">皖ICP备20002152号-2</a>
   </div>
 </template>
 

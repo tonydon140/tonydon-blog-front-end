@@ -1,8 +1,8 @@
 <template>
   <div>
-<!--    <keep-alive :include="['Aboutme', 'Message', 'FriendsLink', 'Reward']">-->
-      <router-view></router-view>
-<!--    </keep-alive>-->
+    <!--    <keep-alive :include="['Aboutme', 'Message', 'FriendsLink', 'Reward']">-->
+    <router-view></router-view>
+    <!--    </keep-alive>-->
   </div>
 </template>
 
@@ -12,7 +12,7 @@
 
 <style lang="less">
 
-.headline-2{
+.headline-2 {
   padding: 15px 0;
   font-size: 24px;
   font-weight: bold;
@@ -68,10 +68,6 @@ legend {
   display: none
 }
 
-// address, caption, cite, code, dfn, em, strong, th, var{
-//   font-style:normal;
-//   font-weight:normal
-// }
 ol, ul {
   list-style: none
 }
@@ -103,7 +99,6 @@ html {
   height: 100%
 }
 
-/*????iphone??safari????????????*/
 input[type="text"], input[type="button"], input[type="submit"], input[type="search"] {
   -webkit-appearance: none;
   border-radius: 0;
@@ -131,17 +126,14 @@ a {
 .container {
   max-width: 80%;
   margin: 0 auto;
-  //align-content: center;
   padding: 0 10px;
-  // overflow-x: hidden;
-  // -webkit-overflow-x: hidden;
 }
 
 //时间和标题
 .s-round-date {
   position: absolute;
-  top: -20px;
-  left: -35px;
+  top: -30px;
+  left: -20px;
   height: 60px;
   width: 70px;
   padding-top: 10px;
@@ -209,31 +201,6 @@ a {
   font-size: 16px;
 }
 
-.s-item .article-coontent {
-  font-size: 15px;
-  white-space: normal;
-  word-wrap: break-word;
-  word-break: break-all;
-}
-
-//标题和按钮
-.s-item .article-content p {
-  margin: 10px 0;
-  line-height: 24px;
-}
-
-.s-item .viewdetail {
-  margin: 10px 0;
-  line-height: 24px;
-  text-align: center;
-}
-
-.s-item .viewdetail a {
-  color: #fff;
-  font-size: 12px;
-  padding: 5px 10px;
-  border-radius: 5px;
-}
 
 .view-more {
   text-align: center;
@@ -241,8 +208,6 @@ a {
 }
 
 .view-more a {
-  /*background:  #97dffd;*/
-  /*padding:6px 0;*/
   border-radius: 5px;
   text-align: center;
   font-size: 14px;
@@ -333,11 +298,11 @@ a {
   }
 
   .s-round-date {
-    width: 0 !important;
+    display: none;
   }
 
   .ui.label {
-    left: -18px !important;
+    left: 14px !important;
     padding-left: 18px !important;
   }
 
@@ -421,65 +386,6 @@ a {
   color: @tcolord;
 }
 
-
-.fitImg {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.maxW {
-  max-width: 100%;
-}
-
-.fwb {
-  font-weight: bold;
-}
-
-.right {
-  float: right;
-}
-
-.left {
-  float: left;
-}
-
-.btnone {
-  border-top: none !important;
-}
-
-.brone {
-  border-right: medium none !important;
-}
-
-.clearfix:before,
-.clearfix:after {
-  display: table;
-  content: "";
-}
-
-.clearfix:after {
-  clear: both
-}
-
-.smalltitle {
-  /*height:36px;*/
-  /*line-height: 36px;*/
-}
-
-.logoImg {
-  width: 160px;;
-  height: 50px;
-  display: inline-block;
-  padding: 5px 5px;
-  vertical-align: top;
-}
-
-.logoImg img {
-  width: 100%;
-  height: 100%;
-}
-
 //公共标签
 .ui.label {
   border-color: @tcolors;
@@ -487,8 +393,7 @@ a {
   background-color: #97dffd;
   margin: 5px 0 15px 2px;
   font-size: 14px;
-  position: relative;
-  left: -32px;
+  position: absolute;
   border-radius: 0 4px 4px 0;
   padding: 7px 11.2px 7px 32px;
   display: inline-block;

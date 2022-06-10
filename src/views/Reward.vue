@@ -5,7 +5,7 @@
     <div class="container">
       <el-row :gutter="30">
         <el-col :sm="24" :md="16" style="transition:all .5s ease-out;margin-bottom:30px;">
-          <Reward></Reward>
+          <UserReward></UserReward>
         </el-col>
         <el-col :sm="24" :md="8">
           <RightList></RightList>
@@ -19,7 +19,7 @@
 <script setup>
 import Header from '../components/user/Header.vue'
 import RightList from '../components/user/RightList.vue'
-import Reward from '../components/user/Reward.vue'
+import UserReward from '../components/user/UserReward.vue'
 import MyFooter from "@/components/MyFooter";
 </script>
 

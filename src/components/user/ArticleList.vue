@@ -2,59 +2,69 @@
 <template>
   <el-row class="share-list-box">
 
-    <el-col :span="24" class="s-item tcommonBox" v-for="(article, index) in data.articleList" :key="article.id">
-
-      <span class="s-round-date">
-        <span class="month" v-html="showInitDate(article.publishTime,'month')+'月'"></span>
-        <span class="day" v-html="showInitDate(article.publishTime,'date')"></span>
-      </span>
-
-      <header>
-        <h1>
-          <router-link :to="'/article/'+article.id" target="_blank">
-            {{ article.title }}
-          </router-link>
-        </h1>
-
-        <h2>
-          <el-icon>
-            <UserFilled/>
-          </el-icon>
-          发表于
-          <el-icon>
-            <Timer/>
-          </el-icon>
-          <span>{{ showInitDate(article.publishTime, 'all') }}</span> •
-          <el-icon>
-            <View/>
-          </el-icon>
-          {{ article.viewCount }} 次围观 •
-        </h2>
-
-        <div class="ui label">
-          <router-link :to="'/category/' + article.categoryId">
-            {{ article.categoryName }}
-          </router-link>
-        </div>
-      </header>
+    <el-col :span="24" v-for="(article, index) in data.articleList" :key="article.id" class="article-box">
 
       <div class="article-content">
-        <p style="text-indent:2em;">
-          {{ article.summary }}
-        </p>
-        <p style="max-height:300px;overflow:hidden;text-align:center;">
-<!--          todo 缩略图尺寸-->
-          <img :src="article.thumbnail" alt="" class="maxW">
-        </p>
+        <el-row :gutter="20">
+
+          <el-col :span="8" class="img-thumbnail">
+            <router-link :to="'/article/'+article.id" target="_blank">
+              <img :src="article.thumbnail" alt="">
+            </router-link>
+          </el-col>
+
+          <el-col :span="16" class="content">
+            <div class="title">
+              <router-link :to="'/article/'+article.id" target="_blank">
+                {{ article.title }}
+              </router-link>
+            </div>
+
+            <div class="summary">
+              {{ article.summary }}
+              <span v-show="article.summary.length > 150"
+                    style="font-size: 1.5em">
+                ...
+              </span>
+            </div>
+          </el-col>
+        </el-row>
       </div>
 
-      <div class="view-detail">
-        <router-link :to="'/article/'+article.id" target="_blank">
-          阅读全文>>
-        </router-link>
+      <div class="meta-footer">
+        <div>
+          <span class="float-left">
+            <el-icon :size="16"><Calendar/></el-icon>
+            {{ article.publishTime.substring(0, 10) }}
+          </span>
+          <!--          <span class="float-left">-->
+          <!--            <el-icon :size="16"><ChatLineSquare/></el-icon>-->
+          <!--            {{ article.viewCount }}-->
+          <!--          </span>-->
+          <span class="float-left">
+             <el-icon :size="16"><View/></el-icon>
+            {{ article.viewCount }}
+          </span>
+
+          <span class="read-all">
+            <router-link :to="'/article/'+article.id" target="_blank">
+              阅读全文
+              <el-icon><ArrowRightBold/></el-icon>
+            </router-link>
+          </span>
+
+          <span class="category">
+            <router-link :to="'/category/' + article.categoryId">
+              <el-tag>
+                {{ article.categoryName }}
+              </el-tag>
+            </router-link>
+          </span>
+        </div>
       </div>
 
     </el-col>
+
     <el-col class="view-more">
       <a v-show="data.hasMore" class="tcolors-bg" href="javascript:void(0);" @click="addMoreFun">点击加载更多</a>
       <a v-show="!data.hasMore" class="tcolors-bg" href="javascript:void(0);">暂无更多数据</a>
@@ -63,13 +73,12 @@
 </template>
 
 <script setup>
-import initDate from '@/utils/server.js'
 import {getArticleList} from '@/api/article'
-import {ref, reactive, watch} from "vue";
+import {reactive, watch} from "vue";
 import {useRoute} from "vue-router";
 import {useStore} from "vuex";
 import router from "@/router";
-import {Timer, UserFilled, View} from "@element-plus/icons-vue";
+import {Calendar, ChatLineSquare, View, ArrowRightBold} from "@element-plus/icons-vue";
 
 
 let store = useStore();
@@ -85,11 +94,6 @@ let data = reactive({
   hasMore: true
 })
 
-
-// 显示初始化时间
-function showInitDate(date, full) {
-  return initDate(date, full)
-}
 
 // 获得文章列表
 function getList() {
@@ -140,20 +144,81 @@ watch(route, routeChange);
 
 </script>
 
-<style scoped lang="less">
-// 文章列表
+<style scoped>
 .share-list-box {
   transition: all 0.5s ease-out;
   font-size: 15px;
+}
 
-  .el-col {
+.share-list-box .article-box {
+  background-color: #fff;
+  margin-bottom: 20px;
+}
 
-    // 阅读全文
-    .view-detail {
-      :hover {
-        color: #00a0e9;
-      }
-    }
-  }
+.article-content {
+  padding: 20px;
+}
+
+.article-content .img-thumbnail {
+  width: 288px;
+  height: 162px;
+}
+
+.article-content .img-thumbnail img {
+  padding: 2px;
+  width: 100%;
+  height: 100%;
+  border: 1px solid #f3f3f3;
+}
+
+
+.article-content .content .title {
+  margin-bottom: 15px;
+  font-size: 24px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.article-content .content .title a:hover {
+  color: #00a0e9;
+}
+
+.article-content .content .summary {
+  position: relative;
+  line-height: 1.5em;
+  /*设置容器高度为5倍行高就是显示5行*/
+  height: 7.5em;
+  overflow: hidden;
+}
+
+
+.meta-footer {
+  height: 25px;
+  clear: both;
+  padding: 8px 20px;
+  border-top: 1px solid #f3f3f3;
+}
+
+.meta-footer span .el-icon {
+  vertical-align: text-bottom;
+}
+
+.meta-footer .float-left {
+  float: left;
+  margin-right: 1rem;
+}
+
+.meta-footer .read-all {
+  float: right;
+  margin-left: 2rem;
+}
+
+.meta-footer .read-all:hover {
+  color: #00a0e9;
+}
+
+.meta-footer .category {
+  float: right;
 }
 </style>

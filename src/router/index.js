@@ -10,7 +10,7 @@ const routes = [
     },
     //首页
     {
-        path: '/Home',
+        path: '/home',
         component: () => import('../views/Home.vue'),
         name: 'Home'
     },
@@ -37,7 +37,7 @@ const routes = [
 
     //分享详情
     {
-        path: '/Reward',
+        path: '/reward',
         component: () => import('../views/Reward.vue'),
         name: 'Reward'
     }, //赞赏

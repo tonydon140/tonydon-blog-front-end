@@ -2,7 +2,7 @@
   <div class="donate">
 
     <div class="donate-word">
-      <el-button @click="info.donatePanel = true" type="success" color="#e26d6d">
+      <el-button @click="info.donatePanel = true" type="success" color="#EB9999">
         请我喝奶茶
         <el-icon><milk-tea/></el-icon>
       </el-button>
@@ -43,16 +43,7 @@ let info = reactive({
 
 <style scoped>
 .donate-word {
-  margin-top: 40px;
   text-align: center;
-}
-
-.donate-body {
-  display: none;
-}
-
-.donate-body-show {
-  display: block;
 }
 
 .donate-item {
@@ -71,7 +62,6 @@ let info = reactive({
 
 .donate-item div {
   display: inline-block;
-  /*width: 150px;*/
   padding: 0 6px;
   box-sizing: border-box;
   text-align: center;

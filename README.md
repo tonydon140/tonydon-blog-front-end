@@ -1,19 +1,5 @@
-# tonydon_blog_vue3
+# TonyDon 博客
+基于 Vue3 和 ElementPlus 开发的博客前台。
 
-## Project setup
-```
-npm install
-```
+博客示例地址：http://www.tonydon.top
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).

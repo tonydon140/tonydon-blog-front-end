@@ -35,8 +35,8 @@
 
     <!--热门文章-->
     <section class="rs4">
-      <h2 class="ui label">热门文章</h2>
-      <ul>
+      <h2 class="ui label" style="left: -16px;">热门文章</h2>
+      <ul style="margin-top: 50px">
         <li v-for="(item, index) in info.browseList" :key="item.id">
           <router-link :to="'/article/' + item.id" target="_blank">
             {{ item.title }}

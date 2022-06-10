@@ -15,13 +15,12 @@
         <el-table-column prop="name" label="赞赏老爷" align="center"></el-table-column>
         <el-table-column prop="money" label="金额" align="center"></el-table-column>
       </el-table>
-      <donate></donate>
+      <donate style="margin-top: 40px"></donate>
     </section>
   </div>
 </template>
 
 <script setup>
-import initDate from "@/utils/server";
 import {reactive} from "vue";
 import {useStore} from "vuex";
 import Donate from "@/components/user/Donate";
@@ -31,12 +30,6 @@ let data = reactive({
   rewardList:[]
 })
 
-
-
-// 时间处理
-function showInitDate(date, full) {
-  return initDate(date, full);
-}
 </script>
 
 <style scoped>

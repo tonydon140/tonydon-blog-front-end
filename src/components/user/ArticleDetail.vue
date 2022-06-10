@@ -1,35 +1,57 @@
-<!-- 文章详情模块 -->
 <template>
-  <div class="detailBox tcommonBox">
+  <div class="detail-box">
+    <div class="body">
 
-    <span class="s-round-date">
-      <span class="month" v-html="showInitDate(info.article.createTime,'month')+'月'"></span>
-      <span class="day" v-html="showInitDate(info.article.createTime,'date')"></span>
-    </span>
+      <span class="s-round-date">
+        <span class="month">
+          {{ data.publishDate.month }} 月
+        </span>
+        <span class="day">
+           {{ data.publishDate.day }}
+        </span>
+      </span>
 
-    <header>
-      <h1>
-        <router-link :to="'/article/' + info.article.id" target="_blank">
-          {{ info.article.title }}
-        </router-link>
-      </h1>
-      <h2>
-        <i class="fa fa-fw fa-user"></i>发表于 <span>{{ info.article.createTime }}</span> •
-        <i class="fa fa-fw fa-eye"></i>{{ Number(info.article.viewCount) }} 次围观 •
-      </h2>
-      <div class="ui label">
-        <router-link :to="'/category/'+info.article.categoryId">{{ info.article.categoryName }}</router-link>
+      <div class="header">
+        <div class="title">
+          <router-link :to="'/article/' + data.article.id" target="_blank">
+            {{ data.article.title }}
+          </router-link>
+        </div>
+
+        <div class="meta-data">
+          <span>
+             <el-icon><Clock/></el-icon>
+             {{ data.publishDate.format }}
+          </span>
+          <span>
+             <el-icon><View/></el-icon>
+             {{ data.article.viewCount }}
+          </span>
+          <div class="ui label category">
+            <router-link :to="'/category/'+data.article.categoryId">{{ data.article.categoryName }}</router-link>
+          </div>
+        </div>
+
+
       </div>
-    </header>
+      <div class="content">
+        <MdEditor :model-value="data.article.content" :preview-only="true"></MdEditor>
+      </div>
+    </div>
 
-    <MdEditor :model-value="info.article.content" :preview-only="true"></MdEditor>
+    <div class="footer">
+      <span class="donate">
+        <donate></donate>
+      </span>
 
-    <donate></donate>
+      <span class="update">
+        最后更新：{{ data.updateDate.format }}
+      </span>
+    </div>
   </div>
 </template>
 
 <script setup>
-import initDate from '@/utils/server'
 import {getArticle, updateViewCount} from '@/api/article.js'
 import MdEditor from 'md-editor-v3'
 import {reactive, watch} from "vue";
@@ -38,23 +60,53 @@ import {useStore} from "vuex";
 import 'md-editor-v3/lib/style.css'
 import router from "@/router";
 import Donate from "@/components/user/Donate";
+import {EditPen, View, Clock} from "@element-plus/icons-vue";
 
 let route = useRoute()
 let store = useStore()
-let info = reactive({
+let data = reactive({
   aid: 1,               // 文章ID
   donatePanel: false,   // 捐赠面板
   article: {},          // 返回详情数据
+  publishDate: {
+    year: '',
+    month: '',
+    day: '',
+    format: ''  // 22/06/10 14:21
+  },
+  updateDate: {
+    year: '',
+    month: '',
+    day: '',
+    format: ''  // 2022-05-20 14:21
+  }
 })
 
-// 年月日的编辑
-function showInitDate(date, full) {
-  return initDate(date, full);
+
+function formatDate(dateStr, isPublishDate) {
+  let dateObj = new Date(dateStr);
+  let year = dateObj.getFullYear();
+  let month = dateObj.getMonth() < 9 ? '0' + (dateObj.getMonth() + 1) : dateObj.getMonth() + 1;
+  let day = dateObj.getDate() < 10 ? '0' + dateObj.getDate() : dateObj.getDate();
+
+  if (isPublishDate) {
+    data.publishDate.year = year;
+    data.publishDate.month = month;
+    data.publishDate.day = day;
+    data.publishDate.format = year.toString().substring(2) + '/' + month + '/' + day + ' ' + dateObj.getHours() + ':' + dateObj.getMinutes();
+  } else {
+    data.updateDate.year = year;
+    data.updateDate.month = month;
+    data.updateDate.day = day;
+    data.updateDate.format = year + '-' + month + '-' + day + ' ' + dateObj.getHours() + ':' + dateObj.getMinutes();
+  }
 }
 
 function getArticleDetail() {
-  getArticle(info.aid).then((response) => {
-    info.article = response
+  getArticle(data.aid).then((res) => {
+    data.article = res
+    formatDate(res["publishTime"], true);
+    formatDate(res["updateTime"], false);
   })
 }
 
@@ -68,9 +120,9 @@ function routeChange() {
       return;
     }
     // 3. 设置文章 id，获取文章详情，更新访问量
-    info.aid = id;
+    data.aid = id;
     getArticleDetail()
-    updateViewCount(info.aid)
+    updateViewCount(data.aid)
   }
 }
 
@@ -80,18 +132,66 @@ watch(route, routeChange)
 </script>
 
 <style scoped>
-.detailBox .viewdetail {
-  margin: 10px 0;
-  line-height: 24px;
+.detail-box {
+  background-color: #fff;
+  margin-bottom: 20px;
+}
+
+.detail-box .body {
+  padding-top: 15px;
+  padding-left: 15px;
+  padding-right: 15px;
+
+}
+
+.detail-box .body .header .title {
+  font-size: 24px;
+  font-weight: bold;
   text-align: center;
+  margin-bottom: 8px;
+  text-shadow: 0 1px 1px rgb(0 0 0 / 50%);
 }
 
-.bd_weixin_popup {
-  position: fixed !important;
+.detail-box .body .header .meta-data {
+  text-align: center;
+  margin-bottom: 25px;
 }
 
-@font-face {
-  font-family: octicons-link;
-  src: url(data:font/woff;charset=utf-8;base64,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) format('woff');
+.detail-box .body .header .meta-data .category {
+  left: 0;
+  top: 45px;
+}
+
+
+.detail-box .body .header .meta-data span {
+  font-size: 16px;
+  margin-right: 1em;
+  text-shadow: 0 1px 1px rgb(0 0 0 / 50%);
+}
+
+.detail-box .body .header .meta-data span .el-icon {
+  vertical-align: text-top;
+}
+
+.detail-box .body .content {
+  margin-bottom: 10px;
+}
+
+.detail-box .footer {
+  padding: 8px 15px;
+  clear: both;
+  border-top: 1px solid #f3f3f3;
+  height: 32px;
+  vertical-align: middle;
+}
+
+.detail-box .footer .donate {
+  float: left;
+}
+
+.detail-box .footer .update {
+  float: right;
+  position: relative;
+  top: 7px;
 }
 </style>

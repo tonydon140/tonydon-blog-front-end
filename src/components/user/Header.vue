@@ -12,7 +12,7 @@
                      @select="handleSelect"
                      :router="true">
 
-              <el-menu-item index="/Home">
+              <el-menu-item index="/home">
                 <el-icon>
                   <home-filled/>
                 </el-icon>
@@ -33,7 +33,7 @@
                 </el-menu-item>
               </el-sub-menu>
 
-              <el-menu-item index="/Reward">
+              <el-menu-item index="/reward">
                 <el-icon>
                   <milk-tea/>
                 </el-icon>
