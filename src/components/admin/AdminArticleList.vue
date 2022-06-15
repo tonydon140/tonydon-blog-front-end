@@ -60,6 +60,7 @@ let data = reactive({
 function refreshArticleList() {
   getArticleListForAdmin().then((res) => {
     data.articleList = res;
+    console.log(res)
   })
 }
 

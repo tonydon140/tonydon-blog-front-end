@@ -1,5 +1,5 @@
 // let host = 'localhost';
-let host = '1.13.249.18';
+let host = 'tonydon.top';
 let baseFrontURL = 'http://' + host + ':8011/user';
 let baseAdminURL = 'http://' + host + ':6515/admin';
 let pexelsImageURL = baseFrontURL + '/pexels-img';

@@ -4,10 +4,10 @@
 
       <span class="s-round-date">
         <span class="month">
-          {{ data.publishDate.month }} 月
+          {{ data.publishDate.date.month }} 月
         </span>
         <span class="day">
-           {{ data.publishDate.day }}
+           {{ data.publishDate.date.day }}
         </span>
       </span>
 
@@ -61,6 +61,7 @@ import 'md-editor-v3/lib/style.css'
 import router from "@/router";
 import Donate from "@/components/user/Donate";
 import {EditPen, View, Clock} from "@element-plus/icons-vue";
+import {parseDate} from "@/utils/time";
 
 let route = useRoute()
 let store = useStore()
@@ -69,36 +70,26 @@ let data = reactive({
   donatePanel: false,   // 捐赠面板
   article: {},          // 返回详情数据
   publishDate: {
-    year: '',
-    month: '',
-    day: '',
+    date: {},
     format: ''  // 22/06/10 14:21
   },
   updateDate: {
-    year: '',
-    month: '',
-    day: '',
+    date: {},
     format: ''  // 2022-05-20 14:21
   }
 })
 
 
+// dateStr: 2022-06-15T01:27:38
 function formatDate(dateStr, isPublishDate) {
-  let dateObj = new Date(dateStr);
-  let year = dateObj.getFullYear();
-  let month = dateObj.getMonth() < 9 ? '0' + (dateObj.getMonth() + 1) : dateObj.getMonth() + 1;
-  let day = dateObj.getDate() < 10 ? '0' + dateObj.getDate() : dateObj.getDate();
+  let date = parseDate(dateStr);
 
   if (isPublishDate) {
-    data.publishDate.year = year;
-    data.publishDate.month = month;
-    data.publishDate.day = day;
-    data.publishDate.format = year.toString().substring(2) + '/' + month + '/' + day + ' ' + dateObj.getHours() + ':' + dateObj.getMinutes();
+    data.publishDate.date = date;
+    data.publishDate.format = date.year.substring(2) + '/' + date.month + '/' + date.day + ' ' + date.hours + ':' + date.minutes;
   } else {
-    data.updateDate.year = year;
-    data.updateDate.month = month;
-    data.updateDate.day = day;
-    data.updateDate.format = year + '-' + month + '-' + day + ' ' + dateObj.getHours() + ':' + dateObj.getMinutes();
+    data.updateDate.date = date;
+    data.updateDate.format = date.year + '-' + date.month + '-' + date.day + ' ' + date.hours + ':' + date.minutes;
   }
 }
 
