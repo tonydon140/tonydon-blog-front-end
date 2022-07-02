@@ -269,7 +269,7 @@ function analyzeEmoji(cont) {
           break;
         }
       }
-      str = str.replace(pattern2, '<img src=' + src + '"/img/emot/image" alt=""/>');
+      str = str.replace(pattern2, '<img src="/img/emot/image/' + src + '"  alt=""/>');
     }
   }
   return str;
