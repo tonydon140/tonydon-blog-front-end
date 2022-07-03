@@ -27,6 +27,10 @@
              <el-icon><View/></el-icon>
              {{ data.article.viewCount }}
           </span>
+          <span>
+            <el-icon :size="16"><ChatLineSquare/></el-icon>
+            {{ data.article.commentCount }}
+          </span>
           <div class="ui label category">
             <router-link :to="'/category/'+data.article.categoryId">{{ data.article.categoryName }}</router-link>
           </div>
@@ -60,7 +64,7 @@ import {useStore} from "vuex";
 import 'md-editor-v3/lib/style.css'
 import router from "@/router";
 import Donate from "@/components/user/Donate";
-import {EditPen, View, Clock} from "@element-plus/icons-vue";
+import {ChatLineSquare, View, Clock} from "@element-plus/icons-vue";
 import {parseDate} from "@/utils/time";
 
 let route = useRoute()
@@ -98,6 +102,8 @@ function getArticleDetail() {
     data.article = res
     formatDate(res["publishTime"], true);
     formatDate(res["updateTime"], false);
+  }).catch(err => {
+    router.push("/home")
   })
 }
 
@@ -113,7 +119,7 @@ function routeChange() {
     // 3. 设置文章 id，获取文章详情，更新访问量
     data.aid = id;
     getArticleDetail()
-    updateViewCount(data.aid)
+    updateViewCount(data.aid).catch(ignore => {})
   }
 }
 

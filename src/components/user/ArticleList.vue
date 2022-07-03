@@ -37,13 +37,15 @@
             <el-icon :size="16"><Calendar/></el-icon>
             {{ article.publishTime.substring(0, 10) }}
           </span>
-          <!--          <span class="float-left">-->
-          <!--            <el-icon :size="16"><ChatLineSquare/></el-icon>-->
-          <!--            {{ article.viewCount }}-->
-          <!--          </span>-->
+
           <span class="float-left">
              <el-icon :size="16"><View/></el-icon>
             {{ article.viewCount }}
+          </span>
+
+          <span class="float-left">
+            <el-icon :size="16"><ChatLineSquare/></el-icon>
+            {{ article.commentCount }}
           </span>
 
           <span class="read-all">

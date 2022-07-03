@@ -13,37 +13,6 @@ const service = axios.create({
     timeout: 10000
 })
 
-// request拦截器
-service.interceptors.request.use(config => {
-    // get请求映射params参数
-    if (config.method === 'get' && config.params) {
-        let url = config.url + '?'
-        for (const propName of Object.keys(config.params)) {
-            const value = config.params[propName]
-            let part = encodeURIComponent(propName) + '='
-            if (value !== null && typeof (value) !== 'undefined') {
-                if (typeof value === 'object') {
-                    for (const key of Object.keys(value)) {
-                        if (value[key] !== null && typeof (value[key]) !== 'undefined') {
-                            const params = propName + '[' + key + ']'
-                            const subPart = encodeURIComponent(params) + '='
-                            url += subPart + encodeURIComponent(value[key]) + '&'
-                        }
-                    }
-                } else {
-                    url += part + encodeURIComponent(value) + '&'
-                }
-            }
-        }
-        url = url.slice(0, -1)
-        config.params = {}
-        config.url = url
-    }
-    return config
-}, error => {
-    console.log(error)
-    return Promise.reject(error)
-})
 
 // 响应拦截器
 service.interceptors.response.use(res => {
@@ -52,18 +21,19 @@ service.interceptors.response.use(res => {
         // 获取错误信息
         const msg = errorCode[code] || res.data.msg || errorCode['default'];
 
+        // 服务器内部错误信息
         if (code === 500) {
-            ElMessage({
-                message: msg,
-                type: 'error'
-            })
-            return Promise.reject(new Error(msg))
-        } else if (code !== 200) {
-            ElNotification.error({
-                title: msg
-            })
-            return Promise.reject('error')
-        } else {
+            ElMessage.error(msg);
+            console.log('500 ' + msg);
+            return Promise.reject(msg);
+        }
+        // 其他错误信息
+        else if (code !== 200) {
+            ElNotification.error({title: msg});
+            return Promise.reject(msg);
+        }
+        // 未出现错误
+        else {
             return res.data.data
         }
     },
