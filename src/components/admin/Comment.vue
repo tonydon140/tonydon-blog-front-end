@@ -18,7 +18,7 @@
       </el-table-column>
       <el-table-column prop="content" label="评论"/>
       <el-table-column prop="articleTitle" label="文章"/>
-      <el-table-column prop="createTime" label="提交于"/>
+      <el-table-column prop="createTime" label="发表于" sortable/>
 
       <el-table-column label="操作" width="80">
         <template #default="scope">
@@ -33,24 +33,30 @@
         </template>
       </el-table-column>
     </el-table>
+
+    <el-pagination
+        background
+        v-model:currentPage="data.pageNum"
+        :page-size="data.pageSize"
+        layout="total, prev, pager, next"
+        :total="data.total"
+    />
   </div>
 </template>
 
 <script setup>
-import {getCommentList, removeComment} from "@/api/comment";
+import {findCommentPageAdmin, removeComment} from "@/api/comment";
 import {reactive} from "vue";
 import {CloseBold} from "@element-plus/icons-vue";
 import {ElMessage, ElMessageBox} from "element-plus";
 
 let data = reactive({
   commentList: [],
+  pageNum: 1,
+  pageSize: 20,
   total: 0
 });
 
-let query = reactive({
-  pageNum: 1,
-  pageSize: 20
-})
 
 // 删除评论
 function handleDelete(comment) {
@@ -61,7 +67,7 @@ function handleDelete(comment) {
   }).then(() => {
     removeComment(comment.id).then(() => {
       ElMessage.success("删除成功！");
-      getComment();
+      refreshCommentList();
     }).catch(() => {
       ElMessage.error("删除失败！");
     })
@@ -69,15 +75,14 @@ function handleDelete(comment) {
   })
 }
 
-function getComment() {
-  getCommentList(query).then(value => {
+function refreshCommentList() {
+  findCommentPageAdmin(data.pageNum, data.pageSize).then(value => {
     data.commentList = value.rows;
     data.total = value.total;
-    // console.log(value);
   })
 }
 
-getComment()
+refreshCommentList();
 
 </script>
 

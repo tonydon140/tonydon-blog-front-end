@@ -3,6 +3,7 @@
     <div style="margin-bottom: 10px">
       <el-button @click="categoryDialog = true">添加分类</el-button>
     </div>
+
     <el-table :data="data.categoryList" stripe>
       <el-table-column prop="id" label="编号"/>
       <el-table-column prop="name" label="分类"/>
@@ -28,6 +29,13 @@
       </el-table-column>
     </el-table>
 
+    <el-pagination
+        background
+        v-model:currentPage="data.pageNum"
+        :page-size="data.pageSize"
+        layout="total, prev, pager, next"
+        :total="data.total"
+    />
 
     <!-- 添加/编辑分类对话框 -->
     <el-dialog v-model="categoryDialog" title="添加分类" width="600px">
@@ -76,13 +84,16 @@
 </template>
 
 <script setup>
-import {reactive, ref} from "vue";
-import {getAllForAdmin, removeCategoryById, saveCategory, confirmRemoveCategoryById} from "@/api/category";
+import {reactive, ref, watch} from "vue";
+import {findCategoryPageAdmin, removeCategoryById, saveCategory, confirmRemoveCategoryById} from "@/api/category";
 import {ElMessage, ElMessageBox} from "element-plus";
 import httpCode from "@/utils/http-code";
 
 let data = reactive({
-  categoryList: []
+  categoryList: [],
+  pageNum: 1,
+  pageSize: 10,
+  total: 0
 })
 
 let categoryDialog = ref(false);
@@ -95,13 +106,17 @@ let categoryForm = reactive({
   loading: false    // 是否在加载
 })
 
-// 刷新分类列表
-function refreshCategoryList() {
-  getAllForAdmin().then((res) => {
-    data.categoryList = res;
+// 监听 data.pageNum 的变化
+watch(() => data.pageNum, (value, oldValue, onCleanup) => {
+  refreshCategoryList();
+})
+
+function refreshCategoryList(){
+  findCategoryPageAdmin(data.pageNum, data.pageSize).then(res => {
+    data.categoryList = res.rows;
+    data.total = res.total;
   });
 }
-
 refreshCategoryList();
 
 // 删除分类

@@ -26,18 +26,6 @@ export function getArticle(id) {
 }
 
 /**
- * 根据文章 id 添加访问量
- * @param id
- * @return {*}
- */
-export function updateViewCount(id) {
-    return request({
-        url: '/article/updateViewCount/' + id,
-        method: 'put'
-    })
-}
-
-/**
  * 发布文章
  * @return {*}
  */
@@ -90,10 +78,6 @@ export function saveDraftArticle(id, title, content, categoryId, thumbnail, upda
     })
 }
 
-export function uploadImage() {
-
-}
-
 export function removeArticleById(id) {
     return adminReq({
         url: '/article/' + id,
@@ -101,18 +85,15 @@ export function removeArticleById(id) {
     })
 }
 
-/**
- * 为后台获取所有的文章
- * @return {*} Promise
- */
-export function getArticleListForAdmin() {
+
+export function findArticlePageAdmin(pageNum, pageSize){
     return adminReq({
-        url: '/article',
-        method: 'get'
+        url: '/article/' + pageNum + '/' + pageSize,
+        method: 'GET'
     })
 }
 
-export function getArticleDetailById(id) {
+export function findArticleByIdAdmin(id) {
     return adminReq({
         url: '/article/' + id,
         method: 'get'

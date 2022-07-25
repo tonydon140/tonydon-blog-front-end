@@ -10,10 +10,10 @@ export function getAllCategory() {
     })
 }
 
-export function getAllForAdmin() {
+export function findCategoryPageAdmin(pageNum, pageSize){
     return adminReq({
-        url: '/category',
-        method: 'get'
+        url: '/category/' + pageNum + '/' + pageSize,
+        method: 'GET'
     })
 }
 

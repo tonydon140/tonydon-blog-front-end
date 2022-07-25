@@ -56,7 +56,7 @@
 </template>
 
 <script setup>
-import {getArticle, updateViewCount} from '@/api/article.js'
+import {getArticle} from '@/api/article.js'
 import MdEditor from 'md-editor-v3'
 import {reactive, watch} from "vue";
 import {useRoute} from "vue-router";
@@ -119,7 +119,6 @@ function routeChange() {
     // 3. 设置文章 id，获取文章详情，更新访问量
     data.aid = id;
     getArticleDetail()
-    updateViewCount(data.aid).catch(ignore => {})
   }
 }
 

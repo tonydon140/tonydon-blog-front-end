@@ -41,10 +41,10 @@ export function getArticleComment(query) {
 }
 
 
-export function getCommentList(query){
+export function findCommentPageAdmin(pageNum, pageSize){
     return requestAdmin({
-        url: '/comment/' + query.pageNum + '/' + query.pageSize,
-        method: 'get'
+        url: '/comment/' + pageNum + '/' + pageSize,
+        method: 'GET'
     })
 }
 

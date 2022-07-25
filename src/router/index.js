@@ -57,13 +57,13 @@ const routes = [
         redirect: '/admin/home',
         children: [
             {path: 'home', component: () => import('../components/admin/AdminHome.vue')},
-            {path: 'edit', component: () => import('../components/admin/EditArticle.vue')},
-            {path: 'edit/:id', component: () => import('../components/admin/EditArticle.vue')},
+            {path: 'edit', component: () => import('../components/admin/AdminEditArticle.vue')},
+            {path: 'edit/:id', component: () => import('../components/admin/AdminEditArticle.vue')},
             {path: 'comment', component: () => import('../components/admin/Comment.vue')},
             {path: 'user', component: () => import('../components/admin/AdminUserList.vue')},
             {path: 'user/:id', component: () => import('../components/admin/AdminUserInfo.vue')},
             {path: 'all-article', component: () => import('../components/admin/AdminArticleList.vue')},
-            {path: 'all-category', component: () => import('../components/admin/CategoryList.vue')},
+            {path: 'all-category', component: () => import('../components/admin/AdminCategoryList.vue')},
             {path: 'friend-link', component: () => import('../components/admin/AdminFriendLink.vue')},
         ]
     }

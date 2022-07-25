@@ -37,8 +37,9 @@
     </el-table>
 
     <el-pagination
-        v-model:currentPage="data.currentPage"
-        :page-size="20"
+        background
+        v-model:currentPage="data.pageNum"
+        :page-size="data.pageSize"
         layout="total, prev, pager, next"
         :total="data.total"
     />
@@ -46,21 +47,26 @@
 </template>
 
 <script setup>
-import {getArticleListForAdmin, removeArticleById} from "@/api/article";
-import {reactive} from "vue";
+import {removeArticleById, findArticlePageAdmin} from "@/api/article";
+import {reactive, watch} from "vue";
 import {ElMessage, ElMessageBox} from "element-plus";
 
 
 let data = reactive({
   articleList: [],
-  currentPage: 1,
-  total: 10,
+  pageNum: 1,
+  pageSize: 10,
+  total: 0,
+})
+
+watch(() => data.pageNum, () => {
+  refreshArticleList();
 })
 
 function refreshArticleList() {
-  getArticleListForAdmin().then((res) => {
-    data.articleList = res;
-    console.log(res)
+  findArticlePageAdmin(data.pageNum, data.pageSize).then(res => {
+    data.total = res.total;
+    data.articleList = res.rows;
   })
 }
 

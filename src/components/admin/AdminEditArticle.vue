@@ -24,18 +24,6 @@
             <el-button class="publish-button" type="primary" @click="updateArticle">更新</el-button>
           </el-card>
 
-          <el-card>
-            <el-collapse class="category-card">
-              <el-collapse-item title="分类" name="1">
-                <el-radio v-for="category in data.categoryList"
-                          v-model="data.category"
-                          :label="category.id"
-                          :key="category.id">
-                  {{ category.name }}
-                </el-radio>
-              </el-collapse-item>
-            </el-collapse>
-          </el-card>
 
           <el-card>
             <div class="thumbnail-card">
@@ -53,6 +41,27 @@
               </el-upload>
             </div>
           </el-card>
+
+          <el-card>
+            <dl>
+              <dd style="font-size: 16px; font-weight: bold">分类</dd>
+              <dt v-for="category in data.categoryList" class="category-ul">
+                <el-radio v-model="data.category" :label="category.id" :key="category.id">
+                  {{ category.name }}
+                </el-radio>
+              </dt>
+            </dl>
+
+            <el-pagination
+                small
+                background
+                v-model:currentPage="queryCategory.pageNum"
+                :page-size="queryCategory.pageSize"
+                layout="total, prev, pager, next"
+                :total="queryCategory.total"
+            />
+          </el-card>
+
         </div>
       </el-col>
     </el-row>
@@ -65,11 +74,11 @@ import 'md-editor-v3/lib/style.css';
 import axios from "axios";
 import {ElMessage} from "element-plus";
 import {reactive, defineProps, watch} from "vue";
-import {getAllForAdmin} from "@/api/category";
+import {findCategoryPageAdmin} from "@/api/category";
 import {getToken} from "@/utils/token";
 import {
   saveDraftArticle,
-  getArticleDetailById,
+  findArticleByIdAdmin,
   publishArticle,
   updatePublishArticle
 } from "@/api/article";
@@ -90,6 +99,12 @@ let data = reactive({
   isPublish: '0',   // 是否发布（0草稿，1已发布）
   publishTime: '',   // 发布时间
 });
+
+let queryCategory = reactive({
+  pageNum: 1,
+  pageSize: 8,
+  total: 0
+})
 
 function clearData() {
   data.categoryList = [];
@@ -123,7 +138,7 @@ function routeChange() {
 
   data.id = id;
   // 获取文章详情
-  getArticleDetailById(id).then(res => {
+  findArticleByIdAdmin(id).then(res => {
     // console.log(res)
     data.title = res.title;
     data.category = res.categoryId;
@@ -198,14 +213,16 @@ function updateArticle() {
 }
 
 // 获得所有的分类
-function getAllCategory() {
-  getAllForAdmin().then((response) => {
-    data.categoryList = response;
+function refreshCategoryList() {
+  findCategoryPageAdmin(queryCategory.pageNum, queryCategory.pageSize).then((response) => {
+    data.categoryList = response.rows;
+    queryCategory.total = response.total;
   })
 }
 
 
-getAllCategory();
+refreshCategoryList();
+watch(() => queryCategory.pageNum, () => refreshCategoryList());
 
 
 // 文章内上传图片
@@ -274,12 +291,6 @@ function handleThumbnailSuccess(res) {
         margin-bottom: 10px;
 
         .category-card {
-          .el-collapse-item {
-            // 单选框独占一行
-            .el-radio {
-              display: block;
-            }
-          }
         }
 
         .thumbnail-card {

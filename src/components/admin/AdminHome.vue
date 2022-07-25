@@ -1,56 +1,50 @@
 <template>
   <div>
-    <h3>欢迎来到后台</h3>
-    <el-button @click="test">测试按钮</el-button>
+    <div>
+      <h2>Redis</h2>
+
+      <el-button @click="redis2MySQLHandler">访问量同步数据库</el-button>
+      <span style="margin-left: 10px">
+        Redis 中的访问量每天1点、7点、13点和19点自动同步至数据库，可以通过按钮手动同步。
+        最后同步时间为：
+      </span>
+    </div>
+
   </div>
 </template>
 
 <script setup>
-import {inject, reactive, ref} from "vue";
+import {viewCount2DB} from "@/api/home";
 import {ElMessage} from "element-plus";
-import {getToken} from "@/utils/token";
 
-// 请求头
-let headers = reactive({
-  token: getToken()
-})
-
-let imageUrl = ref('');
-
-
-function test() {
-
+// Redis 中的访问量同步置数据库
+function redis2MySQLHandler() {
+  viewCount2DB().then(res => {
+    ElMessage.success("同步成功！");
+  })
 }
+
 
 </script>
 
 <style scoped>
-
-.avatar-uploader {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  transition: var(--el-transition-duration-fast);
-}
-
-.avatar-uploader:hover {
-  border-color: var(--el-color-primary);
-}
-
-.el-icon.avatar-uploader-icon {
+h2 {
   font-size: 28px;
-  color: #8c939d;
-  width: 178px;
-  height: 178px;
-  text-align: center;
+  margin-top: 7px;
+  margin-bottom: 7px;
 }
 
-.avatar-uploader .avatar {
-  width: 178px;
-  height: 178px;
-  display: block;
+h3 {
+  font-size: 24px;
+  margin-top: 6px;
+  margin-bottom: 6px;
 }
+
+h4 {
+  font-size: 20px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
 
 </style>
