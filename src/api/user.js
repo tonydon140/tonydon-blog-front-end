@@ -10,7 +10,7 @@ import router from "@/router";
  */
 export function login(username, password) {
     return adminReq({
-        url: '/login',
+        url: '/user/login',
         method: 'post',
         data: {'username': username, 'password': password}
     })
@@ -45,7 +45,7 @@ export function register(username, nickname, email, password, createBy) {
  */
 export function logout() {
     return adminReq({
-        url: '/logout',
+        url: '/user/logout',
         method: 'post'
     })
 }
@@ -91,7 +91,7 @@ export function hasLogin() {
         let token = getToken();
         if (token == null) {
             // 2. token 不存在，直接跳转到登陆页面
-            let promise = router.push('/login');
+            reject();
         } else {
             // 3. 请求后台，验证用户是否已经登陆
             getUserInfoByToken().then(() => {

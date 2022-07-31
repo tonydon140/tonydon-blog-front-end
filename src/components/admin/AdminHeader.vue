@@ -18,7 +18,6 @@ let store = useStore();
 // 如果 store 中没有用户信息，就从后台获取用户信息
 if (JSON.stringify(store.state.userInfo) === '{}') {
   getUserInfoByToken().then((res) => {
-
     store.state.userInfo = res;
   })
 }

@@ -30,9 +30,6 @@
           <h3><a href="">忘记密码？</a></h3>
           <div class="lr-btn tcolors-bg" @click="userLogin">登录</div>
           <div class="otherLogin">
-<!--            <a href="javascript:void(0)"><i class="fa fa-fw fa-wechat"></i></a>-->
-<!--            <a href="javascript:void(0)"><i class="fa fa-fw fa-qq"></i></a>-->
-<!--            <a href="javascript:void(0)"><i class="fa fa-fw fa-weibo"></i></a>-->
           </div>
         </div>
       </div>
@@ -69,6 +66,7 @@ let user = reactive({
 // 用户登陆
 function userLogin() {
   login(user.username, user.password).then((response) => {
+    // console.log(response)
     // 登录成功记录token和用户信息，登录失败给对应提示
     setToken(response.token)
     store.state.userInfo = response.userInfo;

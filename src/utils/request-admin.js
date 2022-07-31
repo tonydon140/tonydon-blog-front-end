@@ -20,7 +20,7 @@ service.interceptors.request.use(config => {
     // 如果是登陆请求，不携带token
     if (config.url === '/login') return config;
     // 非登陆请求，携带 token
-    config.headers['token'] = getToken()
+    config.headers['Authorization'] = getToken()
     return config
 }, error => {
     console.log(error)
